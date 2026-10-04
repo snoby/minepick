@@ -7,4 +7,5 @@ inventory_cache.json
 
 __pycache__/
 *.pyc
+.venv/
 .DS_Store

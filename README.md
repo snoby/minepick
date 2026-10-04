@@ -161,6 +161,19 @@ substring fallback. Anything unmatched is reported in `unmatched_models` (JSON) 
 - `1` — general error (HTTP error, missing keys) — JSON `{"error": ...}` on stdout
 - `2` — hashrate.no quota exceeded
 
+## Tests
+
+```bash
+./run_tests.sh          # 24 unit tests, no network / API keys needed
+```
+
+The suite uses canned fixture data (real hashrate.no payload shapes, slimmed) and
+monkeypatches the HTTP layer — it covers parsing, slug matching/aliases, ranking,
+the COINS custom-hasrate pipeline, OVERRIDES math, cache/quota behavior, and table
+output. `run_tests.sh` reuses `.venv` if pytest is there, else falls back to a
+system pytest, else creates a venv. Regenerate fixtures from a real cache with
+`python3 scripts/extract_fixtures.py`.
+
 ## License
 
 MIT — see [LICENSE](LICENSE).

@@ -1,0 +1,188 @@
+{
+ "1050ti": {
+  "device": {
+   "name": "GTX 1050 Ti",
+   "brand": "NVIDIA"
+  },
+  "profit": {
+   "ticker": "EPIC-ProgPow",
+   "yield": 0.2727179093467758,
+   "revenue": 0.11672326520041901,
+   "profit": -0.02727673479958098
+  },
+  "profit24h": {
+   "ticker": "EPIC-ProgPow",
+   "yield": 0.2727179093467758,
+   "revenue": 0.11672326520041901,
+   "profit": -0.02727673479958098
+  },
+  "revenue": {
+   "ticker": "EPIC-ProgPow",
+   "yield": 0.2727179093467758,
+   "revenue": 0.11672326520041901,
+   "profit": -0.02727673479958098
+  },
+  "revenue24h": {
+   "ticker": "EPIC-ProgPow",
+   "yield": 0.2727179093467758,
+   "revenue": 0.11672326520041901,
+   "profit": -0.02727673479958098
+  },
+  "powerCost": null
+ },
+ "1060": {
+  "device": {
+   "name": "GTX 1060",
+   "brand": "NVIDIA"
+  },
+  "profit": {
+   "ticker": "IRON",
+   "yield": 1.1676267394227793,
+   "revenue": 0.08757200545670785,
+   "profit": -0.03338799454329215
+  },
+  "profit24h": {
+   "ticker": "IRON",
+   "yield": 1.1676267394227793,
+   "revenue": 0.08757200545670785,
+   "profit": -0.03338799454329215
+  },
+  "revenue": {
+   "ticker": "IRON",
+   "yield": 1.1676267394227793,
+   "revenue": 0.08757200545670785,
+   "profit": -0.03338799454329215
+  },
+  "revenue24h": {
+   "ticker": "IRON",
+   "yield": 1.1676267394227793,
+   "revenue": 0.08757200545670785,
+   "profit": -0.03338799454329215
+  },
+  "powerCost": null
+ },
+ "1070": {
+  "device": {
+   "name": "GTX 1070",
+   "brand": "NVIDIA"
+  },
+  "profit": {
+   "ticker": "EPIC-ProgPow",
+   "yield": 0.7346792348752497,
+   "revenue": 0.31444271252660405,
+   "profit": 0.026442712526604073
+  },
+  "profit24h": {
+   "ticker": "EPIC-ProgPow",
+   "yield": 0.7346792348752497,
+   "revenue": 0.31444271252660405,
+   "profit": 0.026442712526604073
+  },
+  "revenue": {
+   "ticker": "EPIC-ProgPow",
+   "yield": 0.7346792348752497,
+   "revenue": 0.31444271252660405,
+   "profit": 0.026442712526604073
+  },
+  "revenue24h": {
+   "ticker": "EPIC-ProgPow",
+   "yield": 0.7346792348752497,
+   "revenue": 0.31444271252660405,
+   "profit": 0.026442712526604073
+  },
+  "powerCost": null
+ },
+ "1070ti": {
+  "device": {
+   "name": "GTX 1070 Ti",
+   "brand": "NVIDIA"
+  },
+  "profit": {
+   "ticker": "EPIC-ProgPow",
+   "yield": 0.740382461116342,
+   "revenue": 0.31688369335779154,
+   "profit": 0.03080369335779154
+  },
+  "profit24h": {
+   "ticker": "EPIC-ProgPow",
+   "yield": 0.740382461116342,
+   "revenue": 0.31688369335779154,
+   "profit": 0.03080369335779154
+  },
+  "revenue": {
+   "ticker": "EPIC-ProgPow",
+   "yield": 0.740382461116342,
+   "revenue": 0.31688369335779154,
+   "profit": 0.03080369335779154
+  },
+  "revenue24h": {
+   "ticker": "EPIC-ProgPow",
+   "yield": 0.740382461116342,
+   "revenue": 0.31688369335779154,
+   "profit": 0.03080369335779154
+  },
+  "powerCost": null
+ },
+ "1080": {
+  "device": {
+   "name": "GTX 1080",
+   "brand": "NVIDIA"
+  },
+  "profit": {
+   "ticker": "EPIC-ProgPow",
+   "yield": 0.8907402438360472,
+   "revenue": 0.3812368243618248,
+   "profit": 0.09707682436182485
+  },
+  "profit24h": {
+   "ticker": "EPIC-ProgPow",
+   "yield": 0.8907402438360472,
+   "revenue": 0.3812368243618248,
+   "profit": 0.09707682436182485
+  },
+  "revenue": {
+   "ticker": "EPIC-ProgPow",
+   "yield": 0.8907402438360472,
+   "revenue": 0.3812368243618248,
+   "profit": 0.09707682436182485
+  },
+  "revenue24h": {
+   "ticker": "EPIC-ProgPow",
+   "yield": 0.8907402438360472,
+   "revenue": 0.3812368243618248,
+   "profit": 0.09707682436182485
+  },
+  "powerCost": null
+ },
+ "1080ti": {
+  "device": {
+   "name": "GTX 1080 Ti",
+   "brand": "NVIDIA"
+  },
+  "profit": {
+   "ticker": "EPIC-ProgPow",
+   "yield": 1.1624212029571699,
+   "revenue": 0.4975162748656643,
+   "profit": 0.17111627486566428
+  },
+  "profit24h": {
+   "ticker": "EPIC-ProgPow",
+   "yield": 1.1624212029571699,
+   "revenue": 0.4975162748656643,
+   "profit": 0.17111627486566428
+  },
+  "revenue": {
+   "ticker": "EPIC-ProgPow",
+   "yield": 1.1624212029571699,
+   "revenue": 0.4975162748656643,
+   "profit": 0.17111627486566428
+  },
+  "revenue24h": {
+   "ticker": "EPIC-ProgPow",
+   "yield": 1.1624212029571699,
+   "revenue": 0.4975162748656643,
+   "profit": 0.17111627486566428
+  },
+  "powerCost": null
+ }
+}

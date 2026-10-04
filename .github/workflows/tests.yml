@@ -1,0 +1,35 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install pytest
+        run: pip install pytest
+
+      - name: Run tests
+        run: ./run_tests.sh
+
+      # minepick itself must stay runnable with zero dependencies
+      - name: Smoke-run CLI (no API keys — must fail gracefully with JSON error)
+        run: |
+          set -e
+          out=$(python minepick.py --kind gpu --device 5090 2>/dev/null) || true
+          echo "$out" | python -c "import sys,json; d=json.load(sys.stdin); assert 'error' in d, d; print('graceful error:', d['error'])"

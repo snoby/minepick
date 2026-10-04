@@ -1,0 +1,74 @@
+{
+ "435": {
+  "name": "RTX 5090",
+  "short": "5090",
+  "deviceType": "gpus",
+  "brandID": "1",
+  "hashrate": "95940000.00",
+  "power": "463",
+  "efficiency": 207213.82289416846
+ },
+ "406": {
+  "name": "RTX 4090 24GB",
+  "short": "4090",
+  "deviceType": "gpus",
+  "brandID": "1",
+  "hashrate": "65000000.00",
+  "power": "299",
+  "efficiency": 217391.30434782608
+ },
+ "393": {
+  "name": "RTX 3090 Ti",
+  "short": "3090ti",
+  "deviceType": "gpus",
+  "brandID": "1",
+  "hashrate": "63700000.00",
+  "power": "428",
+  "efficiency": 148831.77570093458
+ },
+ "376": {
+  "name": "RTX 3080 Ti",
+  "short": "3080ti",
+  "deviceType": "gpus",
+  "brandID": "1",
+  "hashrate": "58700000.00",
+  "power": "354",
+  "efficiency": 165819.20903954803
+ },
+ "436": {
+  "name": "RTX 5080",
+  "short": "5080",
+  "deviceType": "gpus",
+  "brandID": "1",
+  "hashrate": "58700000.00",
+  "power": "249",
+  "efficiency": 235742.9718875502
+ },
+ "411": {
+  "name": "RX 7900 XTX",
+  "short": "7900xtx",
+  "deviceType": "gpus",
+  "brandID": "2",
+  "hashrate": "58390000.00",
+  "power": "300",
+  "efficiency": 194633.33333333334
+ },
+ "431": {
+  "name": "RTX 4080 Super",
+  "short": "4080s",
+  "deviceType": "gpus",
+  "brandID": "1",
+  "hashrate": "52100000.00",
+  "power": "249",
+  "efficiency": 209236.94779116465
+ },
+ "418": {
+  "name": "CMP 170HX 8GB",
+  "short": "cmp170",
+  "deviceType": "gpus",
+  "brandID": "1",
+  "hashrate": "51020000.00",
+  "power": "185",
+  "efficiency": 275783.7837837838
+ }
+}

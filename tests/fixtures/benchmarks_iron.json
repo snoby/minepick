@@ -1,0 +1,12 @@
+{
+ "1060": {"name": "GTX 1060", "short": "1060", "deviceType": "gpus", "brandID": "1",
+          "hashrate": "22000000.00", "power": "120", "efficiency": 183333.3},
+ "1070": {"name": "GTX 1070", "short": "1070", "deviceType": "gpus", "brandID": "1",
+          "hashrate": "30000000.00", "power": "150", "efficiency": 200000.0},
+ "1070ti": {"name": "GTX 1070 Ti", "short": "1070ti", "deviceType": "gpus", "brandID": "1",
+            "hashrate": "32000000.00", "power": "180", "efficiency": 177777.8},
+ "1080": {"name": "GTX 1080", "short": "1080", "deviceType": "gpus", "brandID": "1",
+          "hashrate": "35000000.00", "power": "180", "efficiency": 194444.4},
+ "5090": {"name": "RTX 5090", "short": "5090", "deviceType": "gpus", "brandID": "1",
+          "hashrate": "1310000000.00", "power": "405", "efficiency": 3234567.9}
+}

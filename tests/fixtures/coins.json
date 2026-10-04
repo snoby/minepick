@@ -1,0 +1,2162 @@
+{
+ "ETC": {
+  "ticker": "ETC",
+  "name": "Ethereum Classic",
+  "algorithm": "Etchash",
+  "price": {
+   "USD": "8.84",
+   "hour": "-0.08",
+   "day": "0.26",
+   "week": "-6.72",
+   "month": "19.82",
+   "quarter": "23.67",
+   "halfyear": "4.52",
+   "year": "-54.21",
+   "volume": "3152713.1"
+  },
+  "estimate": {
+   "yield": "7.2026650781173E-11",
+   "yieldDay": "-0.70",
+   "revenue": "6.3671559290557E-10",
+   "revenueDay": "-0.48"
+  },
+  "network": {
+   "hashrate": "1.2963197023333E+14",
+   "difficulty": "1937855895624333",
+   "emission": 9473.846936372718,
+   "emissionUSD": 83749,
+   "blockTime": "14.948904133265",
+   "blockReward": "1.6391623799197"
+  }
+ },
+ "RVN": {
+  "ticker": "RVN",
+  "name": "Ravencoin",
+  "algorithm": "Kawpow",
+  "price": {
+   "USD": "0.00230",
+   "hour": "-0.49",
+   "day": "-0.92",
+   "week": "-5.4",
+   "month": "-25.61",
+   "quarter": "-72.73",
+   "halfyear": "-71.86",
+   "year": "-81.76",
+   "volume": "288667.71"
+  },
+  "estimate": {
+   "yield": "2.5096779356279E-6",
+   "yieldDay": "3.22",
+   "revenue": "5.7722592519441E-9",
+   "revenueDay": "2.77"
+  },
+  "network": {
+   "hashrate": "665338540609",
+   "difficulty": "9492.5025417061",
+   "emission": 1800000,
+   "emissionUSD": 4140,
+   "blockTime": "60",
+   "blockReward": "1250"
+  }
+ },
+ "BEAM": {
+  "ticker": "BEAM",
+  "name": "Beam",
+  "algorithm": "BeamHashV3",
+  "price": {
+   "USD": "0.0117",
+   "hour": "0.58",
+   "day": "0.58",
+   "week": "8.03",
+   "month": "12.19",
+   "quarter": "62.5",
+   "halfyear": "-44.96",
+   "year": "-57.26",
+   "volume": "56739.09"
+  },
+  "estimate": {
+   "yield": "0.57948619970867",
+   "yieldDay": "10.21",
+   "revenue": "0.0067799885365915",
+   "revenueDay": "11.16"
+  },
+  "network": {
+   "hashrate": "48453",
+   "difficulty": "3453923.125",
+   "emission": 30303.0303030303,
+   "emissionUSD": 355,
+   "blockTime": "71.28",
+   "blockReward": "25"
+  }
+ },
+ "CFX": {
+  "ticker": "CFX",
+  "name": "Conflux",
+  "algorithm": "Octopus",
+  "price": {
+   "USD": "0.0535",
+   "hour": "-0.03",
+   "day": "-1.32",
+   "week": "-4.66",
+   "month": "14.78",
+   "quarter": "18.07",
+   "halfyear": "-42.67",
+   "year": "-62.6",
+   "volume": "696026.51"
+  },
+  "estimate": {
+   "yield": "1.484482364694E-7",
+   "yieldDay": "-16.57",
+   "revenue": "7.9419806511129E-9",
+   "revenueDay": "-17.50"
+  },
+  "network": {
+   "hashrate": "472581443699",
+   "difficulty": "234819150380",
+   "emission": 69532.33163293728,
+   "emissionUSD": 3720,
+   "blockTime": "0.5",
+   "blockReward": "0.40238617843135"
+  }
+ },
+ "GRIN": {
+  "ticker": "GRIN",
+  "name": "Grin",
+  "algorithm": "Cuckatoo32",
+  "price": {
+   "USD": "0.0140",
+   "hour": "-0.2",
+   "day": "-2.29",
+   "week": "-13.75",
+   "month": "22.56",
+   "quarter": "-39.25",
+   "halfyear": "-66.57",
+   "year": "-51.99",
+   "volume": "2044.48"
+  },
+  "estimate": {
+   "yield": "21.701783075925",
+   "yieldDay": "21.84",
+   "revenue": "0.30382496306295",
+   "revenueDay": "19.29"
+  },
+  "network": {
+   "hashrate": "3612",
+   "difficulty": "91192188",
+   "emission": 81025.32041262895,
+   "emissionUSD": 1134,
+   "blockTime": "63.98",
+   "blockReward": "60"
+  }
+ },
+ "AE": {
+  "ticker": "AE",
+  "name": "Aeternity",
+  "algorithm": "Cuckoocycle",
+  "price": {
+   "USD": "0.00590",
+   "hour": "-0.23",
+   "day": "-0.57",
+   "week": "-9.01",
+   "month": "18.87",
+   "quarter": "29.59",
+   "halfyear": "-3.34",
+   "year": "-4.28",
+   "volume": "102.88"
+  },
+  "estimate": {
+   "yield": "10.631883118694",
+   "yieldDay": "5.13",
+   "revenue": "0.062728110400295",
+   "revenueDay": "4.60"
+  },
+  "network": {
+   "hashrate": "1848",
+   "difficulty": "8718",
+   "emission": 25365.901140684407,
+   "emissionUSD": 150,
+   "blockTime": "197.25",
+   "blockReward": "57.91"
+  }
+ },
+ "MWC": {
+  "ticker": "MWC",
+  "name": "MimbleWimbleCoin",
+  "algorithm": "Cuckatoo31",
+  "price": {
+   "USD": "10.25",
+   "hour": "-0.11",
+   "day": "0.48",
+   "week": "0.88",
+   "month": "-12.4",
+   "quarter": "20.58",
+   "halfyear": "42.95",
+   "year": "-68.5",
+   "volume": "798.33"
+  },
+  "estimate": {
+   "yield": "0.0079848927800181",
+   "yieldDay": "-6.30",
+   "revenue": "0.081845150995185",
+   "revenueDay": "-5.84"
+  },
+  "network": {
+   "hashrate": "9333",
+   "difficulty": "105812392",
+   "emission": 72,
+   "emissionUSD": 738,
+   "blockTime": "60.0",
+   "blockReward": "0.05"
+  }
+ },
+ "ERG": {
+  "ticker": "ERG",
+  "name": "Ergo",
+  "algorithm": "Autolykos2",
+  "price": {
+   "USD": "0.300",
+   "hour": "-1.84",
+   "day": "-2.48",
+   "week": "-7.87",
+   "month": "15.97",
+   "quarter": "42.35",
+   "halfyear": "2.16",
+   "year": "-57.87",
+   "volume": "119450.7"
+  },
+  "estimate": {
+   "yield": "3.6246560069386E-9",
+   "yieldDay": "-4.70",
+   "revenue": "1.0873968020816E-9",
+   "revenueDay": "-7.17"
+  },
+  "network": {
+   "hashrate": "654648079570",
+   "difficulty": "76326954336256",
+   "emission": 2160,
+   "emissionUSD": 648,
+   "blockTime": "120.0",
+   "blockReward": "3"
+  }
+ },
+ "FIRO": {
+  "ticker": "FIRO",
+  "name": "Firo",
+  "algorithm": "FiroPow",
+  "price": {
+   "USD": "1.11",
+   "hour": "1.54",
+   "day": "2.48",
+   "week": "-12.85",
+   "month": "66.19",
+   "quarter": "75.41",
+   "halfyear": "76.81",
+   "year": "58.57",
+   "volume": "78937.85"
+  },
+  "estimate": {
+   "yield": "1.3990397487794E-8",
+   "yieldDay": "11.07",
+   "revenue": "1.5529341211451E-8",
+   "revenueDay": "14.16"
+  },
+  "network": {
+   "hashrate": "12444430533",
+   "difficulty": "449.33872566087",
+   "emission": 180,
+   "emissionUSD": 200,
+   "blockTime": "150",
+   "blockReward": "0.3125"
+  }
+ },
+ "ALPH": {
+  "ticker": "ALPH",
+  "name": "Alephium",
+  "algorithm": "Blake3",
+  "price": {
+   "USD": "0.0631",
+   "hour": "-9.87",
+   "day": "-23.71",
+   "week": "2.92",
+   "month": "34.81",
+   "quarter": "48.8",
+   "halfyear": "34.81",
+   "year": "-61.06",
+   "volume": "193499.9"
+  },
+  "estimate": {
+   "yield": "4.3014343082533E-12",
+   "yieldDay": "0.00",
+   "revenue": "2.7142050485078E-13",
+   "revenueDay": "0.00"
+  },
+  "network": {
+   "hashrate": "5.8583126761802E+15",
+   "difficulty": "179920487823755",
+   "emission": 12382.65854532432,
+   "emissionUSD": 781,
+   "blockTime": "1.0",
+   "blockReward": "0.14331780723755"
+  }
+ },
+ "KAS": {
+  "ticker": "KAS",
+  "name": "Kaspa",
+  "algorithm": "KHeavyHash",
+  "price": {
+   "USD": "0.0422",
+   "hour": "-0.31",
+   "day": "-0.78",
+   "week": "-11.59",
+   "month": "44.42",
+   "quarter": "39.18",
+   "halfyear": "35.6",
+   "year": "-44.29",
+   "volume": "2452948.32"
+  },
+  "estimate": {
+   "yield": "5.3386230928267E-12",
+   "yieldDay": "0.14",
+   "revenue": "2.2528989451729E-13",
+   "revenueDay": "-0.80"
+  },
+  "network": {
+   "hashrate": "3.5702804234631E+17",
+   "difficulty": "36003251499025236",
+   "emission": 1885832.4528,
+   "emissionUSD": 79582,
+   "blockTime": "0.1",
+   "blockReward": "2.18267645"
+  }
+ },
+ "ETHW": {
+  "ticker": "ETHW",
+  "name": "Ethereum POW",
+  "algorithm": "Ethash",
+  "price": {
+   "USD": "0.294",
+   "hour": "0.49",
+   "day": "3.31",
+   "week": "-2.18",
+   "month": "11.11",
+   "quarter": "13.25",
+   "halfyear": "9.87",
+   "year": "-79.69",
+   "volume": "100628.26"
+  },
+  "estimate": {
+   "yield": "6.1312120042989E-9",
+   "yieldDay": "-4.25",
+   "revenue": "1.8025763292639E-9",
+   "revenueDay": "-1.23"
+  },
+  "network": {
+   "hashrate": "2121464877249",
+   "difficulty": "28183660894264",
+   "emission": 13002.257336343117,
+   "emissionUSD": 3823,
+   "blockTime": "13.29",
+   "blockReward": "2"
+  }
+ },
+ "VTC": {
+  "ticker": "VTC",
+  "name": "Vertcoin",
+  "algorithm": "Verthash",
+  "price": {
+   "USD": "0.0511",
+   "hour": "17.85",
+   "day": "18.39",
+   "week": "18.67",
+   "month": "0.29",
+   "quarter": "22.07",
+   "halfyear": "-5.11",
+   "year": "-32.52",
+   "volume": "71.03"
+  },
+  "estimate": {
+   "yield": "6.1055193274694E-6",
+   "yieldDay": "0.30",
+   "revenue": "3.1199203763369E-7",
+   "revenueDay": "18.64"
+  },
+  "network": {
+   "hashrate": "570113330",
+   "difficulty": "20.592604957849",
+   "emission": 3600,
+   "emissionUSD": 184,
+   "blockTime": "150",
+   "blockReward": "6.25"
+  }
+ },
+ "MEWC": {
+  "ticker": "MEWC",
+  "name": "Meowcoin",
+  "algorithm": "MeowPoW",
+  "price": {
+   "USD": "0.0000158",
+   "hour": "0.37",
+   "day": "-18.36",
+   "week": "2.32",
+   "month": "-13.89",
+   "quarter": "-24.96",
+   "halfyear": "-46.04",
+   "year": "-71.25",
+   "volume": "5333.54"
+  },
+  "estimate": {
+   "yield": "0.00096862958991068",
+   "yieldDay": "-11.68",
+   "revenue": "1.5304347520589E-8",
+   "revenueDay": "-27.70"
+  },
+  "network": {
+   "hashrate": "2539441179",
+   "difficulty": "53.168538043943",
+   "emission": 3933774.8344371514,
+   "emissionUSD": 62,
+   "blockTime": "109.81818181818",
+   "blockReward": "5000"
+  }
+ },
+ "RXD": {
+  "ticker": "RXD",
+  "name": "Radiant",
+  "algorithm": "SHA512256d",
+  "price": {
+   "USD": "0.0000364",
+   "hour": "-0.14",
+   "day": "-4.84",
+   "week": "-42.94",
+   "month": "81.75",
+   "quarter": "-53.16",
+   "halfyear": "-57.83",
+   "year": "-85.63",
+   "volume": "2461.2"
+  },
+  "estimate": {
+   "yield": "4.3572835886443E-8",
+   "yieldDay": "-7.68",
+   "revenue": "1.5860512262665E-12",
+   "revenueDay": "-12.03"
+  },
+  "network": {
+   "hashrate": "1.5797567901599E+14",
+   "difficulty": "11541920.099096",
+   "emission": 7200000,
+   "emissionUSD": 262,
+   "blockTime": "300",
+   "blockReward": "25000"
+  }
+ },
+ "BTC": {
+  "ticker": "BTC",
+  "name": "Bitcoin",
+  "algorithm": "SHA256",
+  "price": {
+   "USD": "85218",
+   "hour": "0",
+   "day": "0.54",
+   "week": "0.89",
+   "month": "7.1",
+   "quarter": "34.05",
+   "halfyear": "26.92",
+   "year": "-29.84",
+   "volume": "922500319.29"
+  },
+  "estimate": {
+   "yield": "4.736751610436E-19",
+   "yieldDay": "0.00",
+   "revenue": "4.0365649873813E-14",
+   "revenueDay": "0.51"
+  },
+  "network": {
+   "hashrate": "8.965743974848E+20",
+   "difficulty": "1.3271600235073E+14",
+   "emission": 450,
+   "emissionUSD": 38348100,
+   "blockTime": "600.0",
+   "blockReward": "3.125"
+  }
+ },
+ "BCH": {
+  "ticker": "BCH",
+  "name": "Bitcoin Cash",
+  "algorithm": "SHA256",
+  "price": {
+   "USD": "315.85",
+   "hour": "-0.15",
+   "day": "0.84",
+   "week": "-5.43",
+   "month": "25.2",
+   "quarter": "29.78",
+   "halfyear": "-28.24",
+   "year": "-46.51",
+   "volume": "15564921.62"
+  },
+  "estimate": {
+   "yield": "1.1451869936996E-16",
+   "yieldDay": "-3.55",
+   "revenue": "3.6170731196001E-14",
+   "revenueDay": "-2.62"
+  },
+  "network": {
+   "hashrate": "4.2177706545212E+18",
+   "difficulty": "548943309105",
+   "emission": 450,
+   "emissionUSD": 142133,
+   "blockTime": "600.0",
+   "blockReward": "3.125"
+  }
+ },
+ "BSV": {
+  "ticker": "BSV",
+  "name": "Bitcoin SV",
+  "algorithm": "SHA256",
+  "price": {
+   "USD": "20.03",
+   "hour": "-0.45",
+   "day": "1.21",
+   "week": "-7.78",
+   "month": "20.81",
+   "quarter": "36.44",
+   "halfyear": "25.58",
+   "year": "",
+   "volume": "268535.33"
+  },
+  "estimate": {
+   "yield": "1.8150905009804E-15",
+   "yieldDay": "-7.75",
+   "revenue": "3.6356262734637E-14",
+   "revenueDay": "-6.63"
+  },
+  "network": {
+   "hashrate": "2.7758476217092E+17",
+   "difficulty": "34634236558.778",
+   "emission": 450,
+   "emissionUSD": 9014,
+   "blockTime": "600",
+   "blockReward": "3.125"
+  }
+ },
+ "LTC": {
+  "ticker": "LTC",
+  "name": "Litecoin",
+  "algorithm": "Scrypt",
+  "price": {
+   "USD": "71.11",
+   "hour": "-0.68",
+   "day": "2.48",
+   "week": "-0.08",
+   "month": "41.18",
+   "quarter": "54.22",
+   "halfyear": "30.17",
+   "year": "-39.51",
+   "volume": "53052181.29"
+  },
+  "estimate": {
+   "yield": "1.2957647336375E-12",
+   "yieldDay": "-8.00",
+   "revenue": "9.2141830208961E-11",
+   "revenueDay": "-5.32"
+  },
+  "network": {
+   "hashrate": "3.1100172940924E+15",
+   "difficulty": "97030382.375158",
+   "emission": 3600,
+   "emissionUSD": 255996,
+   "blockTime": "150.0",
+   "blockReward": "6.25"
+  }
+ },
+ "DOGE": {
+  "ticker": "DOGE",
+  "name": "Dogecoin",
+  "algorithm": "Scrypt",
+  "price": {
+   "USD": "0.0943",
+   "hour": "0.21",
+   "day": "1.28",
+   "week": "-2.59",
+   "month": "11.59",
+   "quarter": "22.94",
+   "halfyear": "3.39",
+   "year": "-61.98",
+   "volume": "47149347.22"
+  },
+  "estimate": {
+   "yield": "4.2733768556293E-9",
+   "yieldDay": "-1.83",
+   "revenue": "4.0297943748585E-10",
+   "revenueDay": "-0.46"
+  },
+  "network": {
+   "hashrate": "3.0579801052689E+15",
+   "difficulty": "44855463.788207",
+   "emission": 14400000,
+   "emissionUSD": 1357920,
+   "blockTime": "60.0",
+   "blockReward": "10000"
+  }
+ },
+ "NEXA": {
+  "ticker": "NEXA",
+  "name": "Nexa",
+  "algorithm": "Nexapow",
+  "price": {
+   "USD": "0.00000113",
+   "hour": "1.52",
+   "day": "0.61",
+   "week": "-11.27",
+   "month": "1.52",
+   "quarter": "186",
+   "halfyear": "92.95",
+   "year": "30.87",
+   "volume": "69745.88"
+  },
+  "estimate": {
+   "yield": "0.00134891813901",
+   "yieldDay": "-0.47",
+   "revenue": "1.5242774970813E-9",
+   "revenueDay": "0.42"
+  },
+  "network": {
+   "hashrate": "2764922809112",
+   "difficulty": "74565.56120766",
+   "emission": 3600000000,
+   "emissionUSD": 4068,
+   "blockTime": "120",
+   "blockReward": "5000000"
+  }
+ },
+ "XMR": {
+  "ticker": "XMR",
+  "name": "Monero",
+  "algorithm": "RandomX",
+  "price": {
+   "USD": "545.75",
+   "hour": "-0.37",
+   "day": "-1.48",
+   "week": "-0.16",
+   "month": "3.48",
+   "quarter": "69.67",
+   "halfyear": "67.2",
+   "year": "69.37",
+   "volume": "39863624.23"
+  },
+  "estimate": {
+   "yield": "5.9805716008491E-8",
+   "yieldDay": "-17.82",
+   "revenue": "3.2638969511634E-5",
+   "revenueDay": "-19.04"
+  },
+  "network": {
+   "hashrate": "6598444126",
+   "difficulty": "791813295101",
+   "emission": 432.6640416,
+   "emissionUSD": 236126,
+   "blockTime": "120",
+   "blockReward": "0.60092228"
+  }
+ },
+ "RTM": {
+  "ticker": "RTM",
+  "name": "Raptoreum",
+  "algorithm": "Ghostrider",
+  "price": {
+   "USD": "0.0000560",
+   "hour": "3.25",
+   "day": "11.92",
+   "week": "9.3",
+   "month": "-30.14",
+   "quarter": "-28.53",
+   "halfyear": "-13.77",
+   "year": "-75.88",
+   "volume": "60.65"
+  },
+  "estimate": {
+   "yield": "0.40589553408836",
+   "yieldDay": "-5.42",
+   "revenue": "2.2730149908948E-5",
+   "revenueDay": "5.51"
+  },
+  "network": {
+   "hashrate": "5521145",
+   "difficulty": "0.170739205535",
+   "emission": 2473200,
+   "emissionUSD": 138,
+   "blockTime": "120.0",
+   "blockReward": "3435"
+  }
+ },
+ "IRON": {
+  "ticker": "IRON",
+  "name": "Iron fish",
+  "algorithm": "FishHash",
+  "price": {
+   "USD": "0.0750",
+   "hour": "0.49",
+   "day": "0.49",
+   "week": "-3.64",
+   "month": "9.44",
+   "quarter": "-2.39",
+   "halfyear": "41.18",
+   "year": "-34.24",
+   "volume": "57043.42"
+  },
+  "estimate": {
+   "yield": "9.4698032394386E-8",
+   "yieldDay": "6.72",
+   "revenue": "7.1023524295789E-9",
+   "revenueDay": "6.87"
+  },
+  "network": {
+   "hashrate": "261551487087",
+   "difficulty": "15798345735398",
+   "emission": 24840.144,
+   "emissionUSD": 1863,
+   "blockTime": "60.0",
+   "blockReward": "17.2501"
+  }
+ },
+ "ZANO": {
+  "ticker": "ZANO",
+  "name": "Zano",
+  "algorithm": "ProgPowZ",
+  "price": {
+   "USD": "5.59",
+   "hour": "-0.15",
+   "day": "1.3",
+   "week": "-11.94",
+   "month": "-19.08",
+   "quarter": "-38.62",
+   "halfyear": "-41.63",
+   "year": "-58.52",
+   "volume": "8998.82"
+  },
+  "estimate": {
+   "yield": "2.1532004751924E-9",
+   "yieldDay": "7.86",
+   "revenue": "1.2036390656325E-8",
+   "revenueDay": "9.83"
+  },
+  "network": {
+   "hashrate": "338279499980.42",
+   "difficulty": "40593539997651",
+   "emission": 720,
+   "emissionUSD": 4025,
+   "blockTime": "120.0",
+   "blockReward": "1"
+  }
+ },
+ "DGB-SHA": {
+  "ticker": "DGB-SHA",
+  "name": "Digibyte",
+  "algorithm": "SHA256",
+  "price": {
+   "USD": "0.00427",
+   "hour": "-0.7",
+   "day": "-0.47",
+   "week": "-4.69",
+   "month": "-7.97",
+   "quarter": "69.44",
+   "halfyear": "-13.39",
+   "year": "-55.89",
+   "volume": "87736.31"
+  },
+  "estimate": {
+   "yield": "7.1950559449705E-12",
+   "yieldDay": "11.32",
+   "revenue": "3.0722888885024E-14",
+   "revenueDay": "10.81"
+  },
+  "network": {
+   "hashrate": "3.6444804309154E+16",
+   "difficulty": "584178592",
+   "emission": 288839.11097087996,
+   "emissionUSD": 1233,
+   "blockTime": "75.0",
+   "blockReward": "250.72839494"
+  }
+ },
+ "OCTA": {
+  "ticker": "OCTA",
+  "name": "OctaSpace",
+  "algorithm": "Ethash",
+  "price": {
+   "USD": "0.111",
+   "hour": "0.25",
+   "day": "1.16",
+   "week": "3.03",
+   "month": "-15.7",
+   "quarter": "30.91",
+   "halfyear": "-14.4",
+   "year": "-77.2",
+   "volume": "4068.7"
+  },
+  "estimate": {
+   "yield": "5.5921576321918E-9",
+   "yieldDay": "5.99",
+   "revenue": "6.2072949717329E-10",
+   "revenueDay": "6.95"
+  },
+  "network": {
+   "hashrate": "1225034803271",
+   "difficulty": "15533441305483",
+   "emission": 6828.075687066247,
+   "emissionUSD": 758,
+   "blockTime": "12.68",
+   "blockReward": "1.00208333"
+  }
+ },
+ "KDA": {
+  "ticker": "KDA",
+  "name": "Kadena",
+  "algorithm": "Blake2s",
+  "price": {
+   "USD": "0.00906",
+   "hour": "0.57",
+   "day": "-0.65",
+   "week": "-24.49",
+   "month": "158.88",
+   "quarter": "49.77",
+   "halfyear": "-20.52",
+   "year": "-97.48",
+   "volume": "1463.99"
+  },
+  "estimate": {
+   "yield": "3.3900861757839E-12",
+   "yieldDay": "2.21",
+   "revenue": "3.0714180752602E-14",
+   "revenueDay": "1.54"
+  },
+  "network": {
+   "hashrate": "1.6311089787331E+16",
+   "difficulty": "24466634680996000",
+   "emission": 55296,
+   "emissionUSD": 501,
+   "blockTime": "1.5",
+   "blockReward": "0.96"
+  }
+ },
+ "XNA": {
+  "ticker": "XNA",
+  "name": "Neurai",
+  "algorithm": "Kawpow",
+  "price": {
+   "USD": "0.0000448",
+   "hour": "0.07",
+   "day": "-0.37",
+   "week": "0.07",
+   "month": "30.71",
+   "quarter": "46.99",
+   "halfyear": "20.84",
+   "year": "-64.13",
+   "volume": "36602.3"
+  },
+  "estimate": {
+   "yield": "0.00010225955259125",
+   "yieldDay": "12.74",
+   "revenue": "4.5812279560881E-9",
+   "revenueDay": "12.24"
+  },
+  "network": {
+   "hashrate": "46323785245",
+   "difficulty": "627.73524313422",
+   "emission": 4320081.36,
+   "emissionUSD": 194,
+   "blockTime": "60.0",
+   "blockReward": "3000.0565"
+  }
+ },
+ "VRSC": {
+  "ticker": "VRSC",
+  "name": "VerusCoin",
+  "algorithm": "VerusHash",
+  "price": {
+   "USD": "0.189",
+   "hour": "-0.2",
+   "day": "3.07",
+   "week": "-11.45",
+   "month": "-16.17",
+   "quarter": "-56.24",
+   "halfyear": "-72.66",
+   "year": "-89.28",
+   "volume": "318.85"
+  },
+  "estimate": {
+   "yield": "7.5853005350905E-9",
+   "yieldDay": "-0.94",
+   "revenue": "1.4336218011321E-9",
+   "revenueDay": "2.30"
+  },
+  "network": {
+   "hashrate": "456505690740",
+   "difficulty": "1299715440590.6",
+   "emission": 4320,
+   "emissionUSD": 816,
+   "blockTime": "60.0",
+   "blockReward": "3"
+  }
+ },
+ "ZEPH": {
+  "ticker": "ZEPH",
+  "name": "Zephyr",
+  "algorithm": "RandomX",
+  "price": {
+   "USD": "0.344",
+   "hour": "-0.43",
+   "day": "-2.69",
+   "week": "-8.88",
+   "month": "-14.76",
+   "quarter": "6.35",
+   "halfyear": "-17.42",
+   "year": "-61.96",
+   "volume": "73721.35"
+  },
+  "estimate": {
+   "yield": "6.5503209376742E-5",
+   "yieldDay": "-9.15",
+   "revenue": "2.2533104025599E-5",
+   "revenueDay": "-11.47"
+  },
+  "network": {
+   "hashrate": "40874237",
+   "difficulty": "5315211820",
+   "emission": 2847.9647240532,
+   "emissionUSD": 980,
+   "blockTime": "120.0",
+   "blockReward": "3.955506561185"
+  }
+ },
+ "CKB": {
+  "ticker": "CKB",
+  "name": "Nervos Network",
+  "algorithm": "Eaglesong",
+  "price": {
+   "USD": "0.00131",
+   "hour": "-0.37",
+   "day": "0.4",
+   "week": "-6.77",
+   "month": "26.72",
+   "quarter": "-29.07",
+   "halfyear": "-30.57",
+   "year": "-67.21",
+   "volume": "102718.45"
+  },
+  "estimate": {
+   "yield": "7.2241340628785E-11",
+   "yieldDay": "-1.95",
+   "revenue": "9.4636156223708E-14",
+   "revenueDay": "-1.20"
+  },
+  "network": {
+   "hashrate": "8.7931111871427E+16",
+   "difficulty": "676092549055861376",
+   "emission": 6351343.580354746,
+   "emissionUSD": 8320,
+   "blockTime": "7.69",
+   "blockReward": "565.29898302"
+  }
+ },
+ "KLS": {
+  "ticker": "KLS",
+  "name": "Karlsen",
+  "algorithm": "KarlsenHashV2",
+  "price": {
+   "USD": "0.0000367",
+   "hour": "-0.02",
+   "day": "13.25",
+   "week": "0.53",
+   "month": "15.39",
+   "quarter": "-26.61",
+   "halfyear": "89.15",
+   "year": "-78.91",
+   "volume": "282.16"
+  },
+  "estimate": {
+   "yield": "0.00021037195488829",
+   "yieldDay": "-5.82",
+   "revenue": "7.7206507444002E-9",
+   "revenueDay": "6.68"
+  },
+  "network": {
+   "hashrate": "8091329956",
+   "difficulty": "8013750618.1146",
+   "emission": 1685868.38352,
+   "emissionUSD": 62,
+   "blockTime": "1",
+   "blockReward": "19.51236555"
+  }
+ },
+ "ABEL": {
+  "ticker": "ABEL",
+  "name": "Abelian",
+  "algorithm": "AbelHash",
+  "price": {
+   "USD": "0.0668",
+   "hour": "-2.94",
+   "day": "-3.5",
+   "week": "6.84",
+   "month": "11.11",
+   "quarter": "-21.72",
+   "halfyear": "-24.55",
+   "year": "-48.63",
+   "volume": "11805.56"
+  },
+  "estimate": {
+   "yield": "1.0043276106383E-11",
+   "yieldDay": "-5.29",
+   "revenue": "6.708908439064E-13",
+   "revenueDay": "-8.44"
+  },
+  "network": {
+   "hashrate": "79350898109",
+   "difficulty": "128191270.80756",
+   "emission": 25390.52814282172,
+   "emissionUSD": 1696,
+   "blockTime": "217.782",
+   "blockReward": "64"
+  }
+ },
+ "ZEC": {
+  "ticker": "ZEC",
+  "name": "Zcash",
+  "algorithm": "EquiHash",
+  "price": {
+   "USD": "1334",
+   "hour": "0.78",
+   "day": "2.95",
+   "week": "-15.61",
+   "month": "31.33",
+   "quarter": "199.45",
+   "halfyear": "451.24",
+   "year": "824.27",
+   "volume": "19024476.62"
+  },
+  "estimate": {
+   "yield": "4.5273247534098E-8",
+   "yieldDay": "-4.45",
+   "revenue": "6.0394512210487E-5",
+   "revenueDay": "-1.65"
+  },
+  "network": {
+   "hashrate": "28482829513",
+   "difficulty": "253460495.1074",
+   "emission": 1422.3627024891346,
+   "emissionUSD": 1897432,
+   "blockTime": "75.93",
+   "blockReward": "1.25"
+  }
+ },
+ "EVR": {
+  "ticker": "EVR",
+  "name": "Evrmore",
+  "algorithm": "EvrProgPow",
+  "price": {
+   "USD": "0.0000119",
+   "hour": "-0.57",
+   "day": "-14.16",
+   "week": "50.85",
+   "month": "9.47",
+   "quarter": "-54.8",
+   "halfyear": "-68.93",
+   "year": "-85.76",
+   "volume": "2692.61"
+  },
+  "estimate": {
+   "yield": "0.0013653770542832",
+   "yieldDay": "-5.62",
+   "revenue": "1.624798694597E-8",
+   "revenueDay": "-18.61"
+  },
+  "network": {
+   "hashrate": "1276628633",
+   "difficulty": "18.709376679744",
+   "emission": 2000160,
+   "emissionUSD": 24,
+   "blockTime": "60.0",
+   "blockReward": "1389"
+  }
+ },
+ "QRL": {
+  "ticker": "QRL",
+  "name": "Quantum R L",
+  "algorithm": "RandomX",
+  "price": {
+   "USD": "0.828",
+   "hour": "-1.27",
+   "day": "-2.43",
+   "week": "26.66",
+   "month": "17",
+   "quarter": "-4.13",
+   "halfyear": "-47.57",
+   "year": "-49.18",
+   "volume": "26570.02"
+  },
+  "estimate": {
+   "yield": "1.4323582273808E-5",
+   "yieldDay": "-4.29",
+   "revenue": "1.1859926122713E-5",
+   "revenueDay": "-6.66"
+  },
+  "network": {
+   "hashrate": "128758986",
+   "difficulty": "7767993998",
+   "emission": 2023.0091115054545,
+   "emissionUSD": 1675,
+   "blockTime": "55.0",
+   "blockReward": "1.287795152"
+  }
+ },
+ "XEL": {
+  "ticker": "XEL",
+  "name": "Xelis",
+  "algorithm": "XelisHashv3",
+  "price": {
+   "USD": "0.426",
+   "hour": "-0.86",
+   "day": "-7.33",
+   "week": "-9.3",
+   "month": "87.8",
+   "quarter": "49.58",
+   "halfyear": "38.86",
+   "year": "-53.61",
+   "volume": "19965.93"
+  },
+  "estimate": {
+   "yield": "2.2006332518566E-5",
+   "yieldDay": "-32.42",
+   "revenue": "9.3746976529091E-6",
+   "revenueDay": "-37.95"
+  },
+  "network": {
+   "hashrate": "233007742",
+   "difficulty": "1157931075",
+   "emission": 5347.333497600001,
+   "emissionUSD": 2278,
+   "blockTime": "5",
+   "blockReward": "0.30945217"
+  }
+ },
+ "SCASH": {
+  "ticker": "SCASH",
+  "name": "Satoshi Cash",
+  "algorithm": "Randomscash",
+  "price": {
+   "USD": "0.0297",
+   "hour": "3.34",
+   "day": "-1.8",
+   "week": "-15.26",
+   "month": "-44.77",
+   "quarter": "1.57",
+   "halfyear": "-45.58",
+   "year": "-77.01",
+   "volume": "5671.88"
+  },
+  "estimate": {
+   "yield": "0.00092684779636425",
+   "yieldDay": "-4.70",
+   "revenue": "2.7527379552018E-5",
+   "revenueDay": "-6.59"
+  },
+  "network": {
+   "hashrate": "8860949",
+   "difficulty": "1.08521419",
+   "emission": 7200,
+   "emissionUSD": 214,
+   "blockTime": "600.0",
+   "blockReward": "50"
+  }
+ },
+ "PEP": {
+  "ticker": "PEP",
+  "name": "Pepecoin",
+  "algorithm": "Scrypt",
+  "price": {
+   "USD": "0.0000909",
+   "hour": "1.36",
+   "day": "0.24",
+   "week": "10.2",
+   "month": "-24.24",
+   "quarter": "8.36",
+   "halfyear": "-38.15",
+   "year": "-68.21",
+   "volume": "1219.36"
+  },
+  "estimate": {
+   "yield": "1.2493663229792E-7",
+   "yieldDay": "-0.19",
+   "revenue": "1.1356739875881E-11",
+   "revenueDay": "0.03"
+  },
+  "network": {
+   "hashrate": "2.4894509207737E+15",
+   "difficulty": "39869023.590665",
+   "emission": 360000000,
+   "emissionUSD": 32724,
+   "blockTime": "60.0",
+   "blockReward": "250000"
+  }
+ },
+ "SAL": {
+  "ticker": "SAL",
+  "name": "Salvium",
+  "algorithm": "RandomX",
+  "price": {
+   "USD": "0.00220",
+   "hour": "-0.2",
+   "day": "3.08",
+   "week": "-4.54",
+   "month": "-54.82",
+   "quarter": "-83.74",
+   "halfyear": "-89.44",
+   "year": "-97.54",
+   "volume": "40850.44"
+  },
+  "estimate": {
+   "yield": "0.0077619702827389",
+   "yieldDay": "2.59",
+   "revenue": "1.7076334622026E-5",
+   "revenueDay": "5.96"
+  },
+  "network": {
+   "hashrate": "4226109",
+   "difficulty": "518444567",
+   "emission": 38107.4935824,
+   "emissionUSD": 84,
+   "blockTime": "120.0",
+   "blockReward": "52.92707442"
+  }
+ },
+ "FB": {
+  "ticker": "FB",
+  "name": "Fractal Bitcoin",
+  "algorithm": "SHA256",
+  "price": {
+   "USD": "0.383",
+   "hour": "0.25",
+   "day": "-2.31",
+   "week": "-7.72",
+   "month": "16.05",
+   "quarter": "6.68",
+   "halfyear": "-10.52",
+   "year": "-14.13",
+   "volume": "216615.9"
+  },
+  "estimate": {
+   "yield": "9.0867209914234E-14",
+   "yieldDay": "-6.67",
+   "revenue": "3.4802141397152E-14",
+   "revenueDay": "-8.58"
+  },
+  "network": {
+   "hashrate": "4.2638980961691E+20",
+   "difficulty": "1383651459",
+   "emission": 18000,
+   "emissionUSD": 6894,
+   "blockTime": "30.0",
+   "blockReward": "6.25"
+  }
+ },
+ "DASH": {
+  "ticker": "DASH",
+  "name": "Dash",
+  "algorithm": "X11",
+  "price": {
+   "USD": "59.12",
+   "hour": "0.35",
+   "day": "1.07",
+   "week": "-13.16",
+   "month": "10.04",
+   "quarter": "68.83",
+   "halfyear": "94.49",
+   "year": "97.74",
+   "volume": "5166771.98"
+  },
+  "estimate": {
+   "yield": "1.0584576561396E-13",
+   "yieldDay": "124.97",
+   "revenue": "6.2576016630976E-12",
+   "revenueDay": "127.35"
+  },
+  "network": {
+   "hashrate": "3.23E+15",
+   "difficulty": "89715688.54",
+   "emission": 580.9846153846153,
+   "emissionUSD": 34348,
+   "blockTime": "156.0",
+   "blockReward": "1.049"
+  }
+ },
+ "QUAI": {
+  "ticker": "QUAI",
+  "name": "Quai",
+  "algorithm": "Kawpow",
+  "price": {
+   "USD": "0.0118",
+   "hour": "1.27",
+   "day": "6.75",
+   "week": "5.79",
+   "month": "18.96",
+   "quarter": "-7.43",
+   "halfyear": "-57.53",
+   "year": "-71.38",
+   "volume": "180855.69"
+  },
+  "estimate": {
+   "yield": "9.0893406145313E-7",
+   "yieldDay": "-7.24",
+   "revenue": "1.0725421925147E-8",
+   "revenueDay": "-3.13"
+  },
+  "network": {
+   "hashrate": "268486346566",
+   "difficulty": "1132201857691",
+   "emission": 198838.82647820323,
+   "emissionUSD": 2346,
+   "blockTime": "5.138",
+   "blockReward": "11.824466324595"
+  }
+ },
+ "CPAY": {
+  "ticker": "CPAY",
+  "name": "Cryptix Pay",
+  "algorithm": "cryptix_ox8",
+  "price": {
+   "USD": "0.000299",
+   "hour": "-0.2",
+   "day": "-11.94",
+   "week": "0.14",
+   "month": "-50.02",
+   "quarter": "-73.96",
+   "halfyear": "-52.77",
+   "year": "9.27",
+   "volume": "219.21"
+  },
+  "estimate": {
+   "yield": "2.6117475698594E-5",
+   "yieldDay": "-25.18",
+   "revenue": "7.8091252338797E-9",
+   "revenueDay": "-34.21"
+  },
+  "network": {
+   "hashrate": "10527346820",
+   "difficulty": "5258367259.516",
+   "emission": 272142.946368,
+   "emissionUSD": 81,
+   "blockTime": "1.0",
+   "blockReward": "3.14980262"
+  }
+ },
+ "EPIC": {
+  "ticker": "EPIC",
+  "name": "Epic Cash",
+  "algorithm": "RandomX",
+  "price": {
+   "USD": "0.428",
+   "hour": "-0.3",
+   "day": "-3.02",
+   "week": "-8.41",
+   "month": "18.15",
+   "quarter": "107.62",
+   "halfyear": "-5.17",
+   "year": "73.16",
+   "volume": "34747.86"
+  },
+  "estimate": {
+   "yield": "7.0138101478632E-5",
+   "yieldDay": "25.62",
+   "revenue": "3.0019107432854E-5",
+   "revenueDay": "21.64"
+  },
+  "network": {
+   "hashrate": "10228779",
+   "difficulty": "613726724",
+   "emission": 691.2,
+   "emissionUSD": 296,
+   "blockTime": "125.0",
+   "blockReward": "1"
+  }
+ },
+ "XTM-RX": {
+  "ticker": "XTM-RX",
+  "name": "Tari RandomX",
+  "algorithm": "RandomX",
+  "price": {
+   "USD": "0.00186",
+   "hour": "-0.08",
+   "day": "-5.66",
+   "week": "19.14",
+   "month": "158.49",
+   "quarter": "410.6",
+   "halfyear": "173.72",
+   "year": "-9.34",
+   "volume": "43980.35"
+  },
+  "estimate": {
+   "yield": "0.021680846924401",
+   "yieldDay": "4.02",
+   "revenue": "4.0326375279385E-5",
+   "revenueDay": "0.25"
+  },
+  "network": {
+   "hashrate": "93882000",
+   "difficulty": "46707294705",
+   "emission": 1832215.6701,
+   "emissionUSD": 3408,
+   "blockTime": "480",
+   "blockReward": "10178.975945"
+  }
+ },
+ "XTM-SHA3X": {
+  "ticker": "XTM-SHA3X",
+  "name": "Tari SHA3X",
+  "algorithm": "SHA3X",
+  "price": {
+   "USD": "0.00186",
+   "hour": "-0.08",
+   "day": "-5.66",
+   "week": "19.14",
+   "month": "158.49",
+   "quarter": "410.6",
+   "halfyear": "173.72",
+   "year": "-9.34",
+   "volume": "43980.35"
+  },
+  "estimate": {
+   "yield": "3.5642993451199E-9",
+   "yieldDay": "-6.75",
+   "revenue": "6.6295967819231E-12",
+   "revenueDay": "-10.14"
+  },
+  "network": {
+   "hashrate": "5.26477E+14",
+   "difficulty": "352132857693363800",
+   "emission": 1832222.1378600001,
+   "emissionUSD": 3408,
+   "blockTime": "480",
+   "blockReward": "10179.011877"
+  }
+ },
+ "GEOD": {
+  "ticker": "GEOD",
+  "name": "Geodnet",
+  "algorithm": "Geodnet",
+  "price": {
+   "USD": "0.304",
+   "hour": "-0.46",
+   "day": "8.81",
+   "week": "13.28",
+   "month": "35.53",
+   "quarter": "39.26",
+   "halfyear": "116.85",
+   "year": "105.13",
+   "volume": "255360.59"
+  },
+  "estimate": {
+   "yield": "6",
+   "yieldDay": "0.00",
+   "revenue": "1.824",
+   "revenueDay": "8.96"
+  },
+  "network": {
+   "hashrate": "22154",
+   "difficulty": null,
+   "emission": 132924.0000000015,
+   "emissionUSD": 40409,
+   "blockTime": "3.8999729168547",
+   "blockReward": "6"
+  }
+ },
+ "WINGS": {
+  "ticker": "WINGS",
+  "name": "Wingbits",
+  "algorithm": "Wingbits",
+  "price": {
+   "USD": "0.00333",
+   "hour": "-0.41",
+   "day": "-0.11",
+   "week": "-0.41",
+   "month": "-9.61",
+   "quarter": "-42.94",
+   "halfyear": "",
+   "year": "",
+   "volume": "3067.05"
+  },
+  "estimate": {
+   "yield": "82.46",
+   "yieldDay": "0.00",
+   "revenue": "0.2745918",
+   "revenueDay": "0.00"
+  },
+  "network": {
+   "hashrate": "5385",
+   "difficulty": null,
+   "emission": 444047.10000000964,
+   "emissionUSD": 1479,
+   "blockTime": "16.044568245125",
+   "blockReward": "82.46"
+  }
+ },
+ "EPIC-ProgPow": {
+  "ticker": "EPIC-ProgPow",
+  "name": "Epic Cash",
+  "algorithm": "ProgPow",
+  "price": {
+   "USD": "0.428",
+   "hour": "-0.3",
+   "day": "-3.02",
+   "week": "-8.41",
+   "month": "18.15",
+   "quarter": "107.62",
+   "halfyear": "-5.17",
+   "year": "73.16",
+   "volume": "34747.86"
+  },
+  "estimate": {
+   "yield": "5.1847511282657E-8",
+   "yieldDay": "-19.93",
+   "revenue": "2.2190734828977E-8",
+   "revenueDay": "-22.11"
+  },
+  "network": {
+   "hashrate": "13581788800",
+   "difficulty": "814907327975",
+   "emission": 720,
+   "emissionUSD": 308,
+   "blockTime": "120",
+   "blockReward": "1"
+  }
+ },
+ "QTC": {
+  "ticker": "QTC",
+  "name": "Qubitcoin",
+  "algorithm": "Qhash",
+  "price": {
+   "USD": "0.649",
+   "hour": "4.9",
+   "day": "12.73",
+   "week": "82.92",
+   "month": "43.34",
+   "quarter": "70.88",
+   "halfyear": "62.34",
+   "year": "-60.16",
+   "volume": "25541.08"
+  },
+  "estimate": {
+   "yield": "1.141822529734E-9",
+   "yieldDay": "-11.75",
+   "revenue": "7.4104282179738E-10",
+   "revenueDay": "-0.56"
+  },
+  "network": {
+   "hashrate": "9319977904975",
+   "difficulty": "3783428961597311",
+   "emission": 10641.760748524075,
+   "emissionUSD": 6907,
+   "blockTime": "405.94827586207",
+   "blockReward": "50.00005125"
+  }
+ },
+ "BC2": {
+  "ticker": "BC2",
+  "name": "Bitcoin II",
+  "algorithm": "SHA256",
+  "price": {
+   "USD": "0.114",
+   "hour": "-2.72",
+   "day": "1.62",
+   "week": "5.38",
+   "month": "-25.12",
+   "quarter": "-44.48",
+   "halfyear": "-82.76",
+   "year": "-94.8",
+   "volume": "133161.4"
+  },
+  "estimate": {
+   "yield": "7.1533818007445E-14",
+   "yieldDay": "-54.22",
+   "revenue": "8.1548552528487E-15",
+   "revenueDay": "-53.82"
+  },
+  "network": {
+   "hashrate": "1.3540078966068E+16",
+   "difficulty": "14060879296",
+   "emission": 7200,
+   "emissionUSD": 821,
+   "blockTime": "600",
+   "blockReward": "50"
+  }
+ },
+ "XTM-C29": {
+  "ticker": "XTM-C29",
+  "name": "Tari C29",
+  "algorithm": "Cuckaroo29",
+  "price": {
+   "USD": "0.00186",
+   "hour": "-0.08",
+   "day": "-5.66",
+   "week": "19.14",
+   "month": "158.49",
+   "quarter": "410.6",
+   "halfyear": "173.72",
+   "year": "-9.34",
+   "volume": "43980.35"
+  },
+  "estimate": {
+   "yield": "23.779371837523",
+   "yieldDay": "78.37",
+   "revenue": "0.044229631617793",
+   "revenueDay": "71.90"
+  },
+  "network": {
+   "hashrate": "39093",
+   "difficulty": "446781",
+   "emission": 1832213.11554,
+   "emissionUSD": 3408,
+   "blockTime": "480",
+   "blockReward": "10178.961753"
+  }
+ },
+ "XEC": {
+  "ticker": "XEC",
+  "name": "eCash",
+  "algorithm": "SHA256",
+  "price": {
+   "USD": "0.00000806",
+   "hour": "-0.48",
+   "day": "-0.11",
+   "week": "-8.08",
+   "month": "13.22",
+   "quarter": "50.12",
+   "halfyear": "17.68",
+   "year": "-55.95",
+   "volume": "267575.24"
+  },
+  "estimate": {
+   "yield": "5.6891996478348E-9",
+   "yieldDay": "2.00",
+   "revenue": "4.5854949161548E-14",
+   "revenueDay": "2.00"
+  },
+  "network": {
+   "hashrate": "4.3637464916715E+16",
+   "difficulty": "6408859075.6474",
+   "emission": 261000000,
+   "emissionUSD": 2104,
+   "blockTime": "600",
+   "blockReward": "1812500"
+  }
+ },
+ "QUAI-SHA": {
+  "ticker": "QUAI-SHA",
+  "name": "Quai Sha",
+  "algorithm": "SHA256",
+  "price": {
+   "USD": "0.0118",
+   "hour": "1.27",
+   "day": "6.75",
+   "week": "5.79",
+   "month": "18.96",
+   "quarter": "-7.43",
+   "halfyear": "-57.53",
+   "year": "-71.38",
+   "volume": "180855.69"
+  },
+  "estimate": {
+   "yield": "4.0312216502602E-12",
+   "yieldDay": "-12.97",
+   "revenue": "4.7568415473071E-14",
+   "revenueDay": "-9.12"
+  },
+  "network": {
+   "hashrate": "1.0536491335108E+17",
+   "difficulty": "253430344218118109",
+   "emission": 821909.8072767563,
+   "emissionUSD": 9699,
+   "blockTime": "1.243",
+   "blockReward": "11.824466324595"
+  }
+ },
+ "QUAI-SCRYPT": {
+  "ticker": "QUAI-SCRYPT",
+  "name": "Quai Scrypt",
+  "algorithm": "Scrypt",
+  "price": {
+   "USD": "0.0118",
+   "hour": "1.27",
+   "day": "6.75",
+   "week": "5.79",
+   "month": "18.96",
+   "quarter": "-7.43",
+   "halfyear": "-57.53",
+   "year": "-71.38",
+   "volume": "180855.69"
+  },
+  "estimate": {
+   "yield": "5.5026245600151E-8",
+   "yieldDay": "-12.18",
+   "revenue": "6.4930969808179E-10",
+   "revenueDay": "-7.48"
+  },
+  "network": {
+   "hashrate": "17755546396907",
+   "difficulty": "18566301940145",
+   "emission": 857795.0381570177,
+   "emissionUSD": 10122,
+   "blockTime": "1.191",
+   "blockReward": "11.824466324595"
+  }
+ },
+ "ARRR": {
+  "ticker": "ARRR",
+  "name": "Pirate Chain",
+  "algorithm": "EquiHash",
+  "price": {
+   "USD": "0.305",
+   "hour": "-0.15",
+   "day": "-0.47",
+   "week": "-1.12",
+   "month": "64.62",
+   "quarter": "27.96",
+   "halfyear": "68.26",
+   "year": "",
+   "volume": "344083.34"
+  },
+  "estimate": {
+   "yield": "0.00017520031036626",
+   "yieldDay": "72.10",
+   "revenue": "5.3436094661709E-5",
+   "revenueDay": "72.10"
+  },
+  "network": {
+   "hashrate": "1966291.3619201",
+   "difficulty": "7373592.6072003",
+   "emission": 360,
+   "emissionUSD": 110,
+   "blockTime": "60",
+   "blockReward": "0.25"
+  }
+ },
+ "ONO": {
+  "ticker": "ONO",
+  "name": "Onocoy",
+  "algorithm": "Onocoy",
+  "price": {
+   "USD": "0.0183",
+   "hour": "-0.04",
+   "day": "-4.23",
+   "week": "23.6",
+   "month": "9.54",
+   "quarter": "-2.18",
+   "halfyear": "",
+   "year": "",
+   "volume": "689.61"
+  },
+  "estimate": {
+   "yield": "27",
+   "yieldDay": "0.00",
+   "revenue": "0.4941",
+   "revenueDay": "-3.17"
+  },
+  "network": {
+   "hashrate": "5886",
+   "difficulty": null,
+   "emission": 158921.9999999979,
+   "emissionUSD": 2908,
+   "blockTime": "14.678899082569",
+   "blockReward": "27"
+  }
+ },
+ "PRL": {
+  "ticker": "PRL",
+  "name": "Pearl",
+  "algorithm": "pearl-pow",
+  "price": {
+   "USD": "0.979",
+   "hour": "0",
+   "day": "-8.5",
+   "week": "-32.94",
+   "month": "179.72",
+   "quarter": "122.5",
+   "halfyear": "",
+   "year": "",
+   "volume": "1080250.91"
+  },
+  "estimate": {
+   "yield": "2.2024892027311E-14",
+   "yieldDay": "-0.12",
+   "revenue": "2.1562369294738E-14",
+   "revenueDay": "-8.61"
+  },
+  "network": {
+   "hashrate": "4.3136494481774E+19",
+   "difficulty": "33245490.159652",
+   "emission": 950076.633397762,
+   "emissionUSD": 930125,
+   "blockTime": "207.6495132128",
+   "blockReward": "2283.3674819433"
+  }
+ },
+ "QUAN": {
+  "ticker": "QUAN",
+  "name": "Quantus",
+  "algorithm": "quantus",
+  "price": {
+   "USD": "110.21",
+   "hour": "1.19",
+   "day": "-37.57",
+   "week": "387.23",
+   "month": "",
+   "quarter": "",
+   "halfyear": "",
+   "year": "",
+   "volume": "724077.95"
+  },
+  "estimate": {
+   "yield": "4.5289927486675E-11",
+   "yieldDay": "34.68",
+   "revenue": "5.2033597689441E-9",
+   "revenueDay": "-14.89"
+  },
+  "network": {
+   "hashrate": "34775654599420",
+   "difficulty": "572312684925938",
+   "emission": 1574.986875109374,
+   "emissionUSD": 173579,
+   "blockTime": "16.45728",
+   "blockReward": "0.3"
+  }
+ },
+ "DINGO": {
+  "ticker": "DINGO",
+  "name": "Dingocoin",
+  "algorithm": "Scrypt",
+  "price": {
+   "USD": "0.0000199",
+   "hour": "-0.2",
+   "day": "-1.19",
+   "week": "-3.59",
+   "month": "-37.74",
+   "quarter": "-21.81",
+   "halfyear": "117.77",
+   "year": "-21.5",
+   "volume": "17748.26"
+  },
+  "estimate": {
+   "yield": "5.7220171509343E-9",
+   "yieldDay": "-2.00",
+   "revenue": "1.1386814130359E-13",
+   "revenueDay": "-3.45"
+  },
+  "network": {
+   "hashrate": "2.2841858002612E+15",
+   "difficulty": "35171380.152923",
+   "emission": 14400000,
+   "emissionUSD": 287,
+   "blockTime": "60.0",
+   "blockReward": "10000"
+  }
+ },
+ "BTCS": {
+  "ticker": "BTCS",
+  "name": "Bitcoin Silver",
+  "algorithm": "SHA256",
+  "price": {
+   "USD": "0.00919",
+   "hour": "1.1",
+   "day": "6.12",
+   "week": "-36.62",
+   "month": "-49.23",
+   "quarter": "137.47",
+   "halfyear": "-30.9",
+   "year": "29.8",
+   "volume": "859.92"
+  },
+  "estimate": {
+   "yield": "2.1303426199517E-12",
+   "yieldDay": "-33.30",
+   "revenue": "1.9577848677356E-14",
+   "revenueDay": "-28.89"
+  },
+  "network": {
+   "hashrate": "2.1669750086268E+15",
+   "difficulty": "177053981.45197",
+   "emission": 6771.159874608151,
+   "emissionUSD": 62,
+   "blockTime": "319.0",
+   "blockReward": "25"
+  }
+ },
+ "NPT": {
+  "ticker": "NPT",
+  "name": "Neptune-cash",
+  "algorithm": "tip5",
+  "price": {
+   "USD": "0.130",
+   "hour": "8.12",
+   "day": "-0.2",
+   "week": "-18.91",
+   "month": "-7.33",
+   "quarter": "-18.91",
+   "halfyear": "-48.1",
+   "year": "",
+   "volume": "1339.94"
+  },
+  "estimate": {
+   "yield": "5.8737325168824E-7",
+   "yieldDay": "-44.57",
+   "revenue": "7.6358522719471E-8",
+   "revenueDay": "-39.95"
+  },
+  "network": {
+   "hashrate": "60129940000",
+   "difficulty": "18760540015948",
+   "emission": 17202.05319645357,
+   "emissionUSD": 2236,
+   "blockTime": "642.9",
+   "blockReward": "128"
+  }
+ },
+ "KRGN-KAWPOW": {
+  "ticker": "KRGN-KAWPOW",
+  "name": "Kerrigan Kawpow",
+  "algorithm": "Kawpow",
+  "price": {
+   "USD": "0.00777",
+   "hour": "-3.12",
+   "day": "-18.72",
+   "week": "-6.16",
+   "month": "-0.64",
+   "quarter": "-66.8",
+   "halfyear": "-81.14",
+   "year": "",
+   "volume": "64.84"
+  },
+  "estimate": {
+   "yield": "9.0633040937634E-7",
+   "yieldDay": "32.91",
+   "revenue": "7.0421872808542E-9",
+   "revenueDay": "9.40"
+  },
+  "network": {
+   "hashrate": "1199397481",
+   "difficulty": "115.41265091322",
+   "emission": 5504.8677302614815,
+   "emissionUSD": 43,
+   "blockTime": "392.38",
+   "blockReward": "25"
+  }
+ },
+ "KRGN-X11": {
+  "ticker": "KRGN-X11",
+  "name": "Kerrigan X11",
+  "algorithm": "X11",
+  "price": {
+   "USD": "0.00777",
+   "hour": "-3.12",
+   "day": "-18.72",
+   "week": "-6.16",
+   "month": "-0.64",
+   "quarter": "-66.8",
+   "halfyear": "-81.14",
+   "year": "",
+   "volume": "64.84"
+  },
+  "estimate": {
+   "yield": "4.2510683859884E-10",
+   "yieldDay": "19.60",
+   "revenue": "3.303080135913E-12",
+   "revenueDay": "-1.56"
+  },
+  "network": {
+   "hashrate": "1351027300019",
+   "difficulty": "72393.712137812",
+   "emission": 2896.179992223221,
+   "emissionUSD": 23,
+   "blockTime": "745.81",
+   "blockReward": "25"
+  }
+ },
+ "KRGN-E200": {
+  "ticker": "KRGN-E200",
+  "name": "Kerrigan E200",
+  "algorithm": "EquiHash",
+  "price": {
+   "USD": "0.00777",
+   "hour": "-3.12",
+   "day": "-18.72",
+   "week": "-6.16",
+   "month": "-0.64",
+   "quarter": "-66.8",
+   "halfyear": "-81.14",
+   "year": "",
+   "volume": "64.84"
+  },
+  "estimate": {
+   "yield": "0.004405750013985",
+   "yieldDay": "58.19",
+   "revenue": "3.4232677608664E-5",
+   "revenueDay": "23.41"
+  },
+  "network": {
+   "hashrate": "121277",
+   "difficulty": "0.00048402194971645",
+   "emission": 3245.77748392138,
+   "emissionUSD": 25,
+   "blockTime": "665.48",
+   "blockReward": "25"
+  }
+ },
+ "KRGN-E192": {
+  "ticker": "KRGN-E192",
+  "name": "Kerrigan E192",
+  "algorithm": "Equihash 192_7",
+  "price": {
+   "USD": "0.00777",
+   "hour": "-3.12",
+   "day": "-18.72",
+   "week": "-6.16",
+   "month": "-0.64",
+   "quarter": "-66.8",
+   "halfyear": "-81.14",
+   "year": "",
+   "volume": "64.84"
+  },
+  "estimate": {
+   "yield": "0.7793242333734",
+   "yieldDay": "68.71",
+   "revenue": "0.0060553492933113",
+   "revenueDay": "31.62"
+  },
+  "network": {
+   "hashrate": "347",
+   "difficulty": "1.5811127697652E-6",
+   "emission": 2818.0774449431165,
+   "emissionUSD": 22,
+   "blockTime": "766.48",
+   "blockReward": "25"
+  }
+ },
+ "BCH2": {
+  "ticker": "BCH2",
+  "name": "Bitcoin Cash II",
+  "algorithm": "SHA256",
+  "price": {
+   "USD": "0.0449",
+   "hour": "-3.78",
+   "day": "-7.35",
+   "week": "-5.99",
+   "month": "142.9",
+   "quarter": "174",
+   "halfyear": "",
+   "year": "",
+   "volume": "10958.1"
+  },
+  "estimate": {
+   "yield": "1.9942133318912E-13",
+   "yieldDay": "-52.75",
+   "revenue": "8.9540178601914E-15",
+   "revenueDay": "-56.26"
+  },
+  "network": {
+   "hashrate": "1.2465614386874E+16",
+   "difficulty": "5043735113.4889",
+   "emission": 7200,
+   "emissionUSD": 323,
+   "blockTime": "600",
+   "blockReward": "50"
+  }
+ },
+ "BTGS": {
+  "ticker": "BTGS",
+  "name": "BitcoinGold",
+  "algorithm": "SHA256",
+  "price": {
+   "USD": "0.00941",
+   "hour": "-0.42",
+   "day": "-5.89",
+   "week": "10.46",
+   "month": "0.01",
+   "quarter": "23.83",
+   "halfyear": "",
+   "year": "",
+   "volume": "213.69"
+  },
+  "estimate": {
+   "yield": "2.0217290876443E-12",
+   "yieldDay": "0.00",
+   "revenue": "1.9145774459991E-14",
+   "revenueDay": "-8.06"
+  },
+  "network": {
+   "hashrate": null,
+   "difficulty": null,
+   "emission": 7200,
+   "emissionUSD": 68,
+   "blockTime": "600",
+   "blockReward": "50"
+  }
+ },
+ "GAEL": {
+  "ticker": "GAEL",
+  "name": "Gaelium",
+  "algorithm": "Kawpow",
+  "price": {
+   "USD": "0.000152",
+   "hour": "3.1",
+   "day": "-0.29",
+   "week": "50.06",
+   "month": "-11.37",
+   "quarter": "",
+   "halfyear": "",
+   "year": "",
+   "volume": "218.53"
+  },
+  "estimate": {
+   "yield": "0.00016028663170375",
+   "yieldDay": "395.50",
+   "revenue": "2.4363568018969E-8",
+   "revenueDay": "395.50"
+  },
+  "network": {
+   "hashrate": "6067464564",
+   "difficulty": "125.5037141767095",
+   "emission": 720000,
+   "emissionUSD": 109,
+   "blockTime": "120",
+   "blockReward": "1000"
+  }
+ },
+ "ZKAS": {
+  "ticker": "ZKAS",
+  "name": "Zkas",
+  "algorithm": "KHeavyHash",
+  "price": {
+   "USD": "0.00409",
+   "hour": "-0.2",
+   "day": "-9.07",
+   "week": "",
+   "month": "",
+   "quarter": "",
+   "halfyear": "",
+   "year": "",
+   "volume": "18594.41"
+  },
+  "estimate": {
+   "yield": "9.8933676350306E-11",
+   "yieldDay": "-3.67",
+   "revenue": "4.0463873627275E-13",
+   "revenueDay": "-7.95"
+  },
+  "network": {
+   "hashrate": "3.1358680958282E+16",
+   "difficulty": "3.1358680958282E+16",
+   "emission": 3265715.360736,
+   "emissionUSD": 13357,
+   "blockTime": "1",
+   "blockReward": "37.79763149"
+  }
+ }
+}
