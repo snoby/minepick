@@ -1,0 +1,28 @@
+name: AI Code Review (PR-Agent)
+
+on:
+  pull_request:
+    types: [opened, reopened, ready_for_review]
+  issue_comment:
+    types: [created]
+
+permissions:
+  issues: write
+  pull-requests: write
+  contents: read
+
+jobs:
+  pr-agent:
+    # run on PRs, and on comments (so /review /improve /ask commands work)
+    if: ${{ github.event.sender.type != 'Bot' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: Codium-ai/pr-agent@main
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          # free open mode: no API key of our own; tool uses its served key
+          google_gemini_enabled: false
+          pr_commands: |
+            /describe --pr_description.publish_labels=false
+            /review --pr_reviewer.num_code_suggestions=0
+            /improve --pr_code_suggestions.summarize=true
