@@ -1,0 +1,10 @@
+# secrets — never commit
+.minepick.env
+
+# local scratch output
+last_*.json
+inventory_cache.json
+
+__pycache__/
+*.pyc
+.DS_Store
