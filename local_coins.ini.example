@@ -1,0 +1,134 @@
+# local_coins.ini — coins hashrate.no doesn't know about
+# =======================================================
+#
+# minepick ranks coins from hashrate.no's estimate tables. Coins that are too
+# new (or too obscure) to be listed there simply don't exist in the rankings.
+# This file fills that gap: for each coin you declare here, minepick computes
+# yield-per-hashrate itself from LIVE network data (your pool API or node RPC)
+# and injects the coin into the same ranking/summary/switch pipeline as any
+# hashrate.no coin.
+#
+# PHILOSOPHY — who provides what:
+#   THIS FILE (you, static):   ticker/algorithm label, block reward, manual
+#                              price, and the URLs where live data lives.
+#   POOL API / NODE RPC (live, fetched every run): network hashrate, average
+#                              block time / blocks per day, block timestamps.
+#   Nothing here is re-declared if a source can provide it — entries below
+#   marked "fallback" are only consulted when the live fetch fails or is
+#   absent, so your rankings stay as fresh as the chain.
+#
+# FILE LOCATION (first hit wins):
+#   1. $LOCAL_COINS_FILE (explicit path)
+#   2. ~/.local_coins.ini
+#   3. ./local_coins.ini next to minepick.py
+#   4. ./local_coins.ini in the working directory
+#
+# No file, no local coins — minepick behaves exactly as before.
+#
+# FORMAT: standard INI. One [section] per coin; the section name is the coin
+# key used in rankings. Lines starting with # or ; are comments. Inline
+# comments after values are NOT supported by the INI parser — put comments
+# on their own line.
+#
+# HOW PROFIT IS COMPUTED (the "block time" method — no difficulty math):
+#
+#   blocks_per_day   = 86400 / avg_block_time     <- measured from recent
+#                                                    block timestamps
+#   coins_per_day    = blocks_per_day * reward    <- total network emission
+#   yield_per_hash   = coins_per_day / network_hashrate
+#   your_coins_day   = yield_per_hash * your_gpu_hashrate
+#   revenue          = your_coins_day * price
+#   cost             = your_gpu_watts * 24 / 1000 * POWER_COST
+#   profit           = revenue - cost
+#
+# `your_gpu_hashrate` and `your_gpu_watts` come from HiveOS live stats — the
+# same numbers already used for the "live" column. `network_hashrate` and
+# `avg_block_time` come from the pool API or node RPC configured per coin.
+#
+# NOTE ON YOUNG CHAINS: the advertised block time is often fiction while the
+# chain warms up (slow first blocks, retarget lag). minepick prefers the
+# OBSERVED average of the last ~100 block timestamps. If neither source can
+# provide timestamps, use the `avg_block_time` fallback below — but expect
+# low-confidence numbers on a young coin.
+
+
+# ---------------------------------------------------------------------------
+# EXAMPLE COIN 1 — a yespower coin served by your own Miningcore instance.
+# Miningcore's REST API exposes everything needed, so no node RPC required.
+# ---------------------------------------------------------------------------
+[civiclight]
+# Human-readable label shown in tables/rankings (defaults to section name).
+label = Civiclight
+
+# Hash algorithm — informational only (shown in JSON output, useful when
+# comparing similar coins).
+algorithm = yespower
+
+# Block reward in coins per block. STATIC — the one number you know from the
+# coin's launch announcement / source code. For coins with changing rewards
+# (halvings, phase schedules) put the CURRENT value and re-check occasionally.
+reward = 100
+
+# --- PRICE ---------------------------------------------------------------
+# New coins are usually NOT on CoinGecko yet. Options, first non-empty wins:
+#
+#   price       = manual USD price. The honest option for an unlisted coin:
+#                 whatever the last OTC/discord/community trade was. Set to 0
+#                 to rank purely by coins/day (relative yield ranking).
+#   price_api   = optional auto source, used when `price` is empty. Currently
+#                 supported: coingecko:<id> (the id from the coin's
+#                 coingecko.com URL). Free tier, no key, rate-limited lightly.
+#
+# If BOTH are empty the coin is ranked by coins/day and shown without a $.
+price = 0.42
+# price_api = coingecko:civiclight
+
+# --- LIVE NETWORK DATA SOURCES -------------------------------------------
+# pool_api : Miningcore-style REST endpoint for this coin's pool. Provides
+#            networkHashrate + recent block stats in one fetch. PREFERRED —
+#            the pool already did the per-algo difficulty math correctly.
+#            Example (your lab pool):  http://10.0.0.197:5003/api/pools/civiclight
+# node_rpc : Bitcoin-style JSON-RPC as fallback when no pool API exists.
+#            Uses getmininginfo (networkhashps) + getblockstats (timestamps).
+#            Credentials: if your node needs rpcuser/rpcpassword, put them in
+#            the URL as http://user:pass@host:port — consider file perms.
+#
+# Leave a line empty if that source doesn't exist for this coin; minepick
+# uses whichever is configured, pool_api first.
+pool_api =
+node_rpc =
+
+# --- FALLBACKS (only used when live sources fail/absent) ------------------
+# avg_block_time : nominal seconds per block. YOUNG-CHAIN WARNING: advertised
+#                  values can be far from reality; treat resulting estimates
+#                  as low-confidence (minepick flags them in JSON output).
+# network_hashrate : manual H/s if you truly have no source. Almost always
+#                  better to configure pool_api or node_rpc instead.
+avg_block_time =
+network_hashrate =
+
+
+# ---------------------------------------------------------------------------
+# EXAMPLE COIN 2 — brand new, nowhere listed, no pool API, price unknown.
+# This is the minimal viable entry: rank by coins/day until a market exists.
+# ---------------------------------------------------------------------------
+[somebrandnewcoin]
+algorithm = kawpow
+reward = 50
+price =
+pool_api =
+node_rpc = http://10.0.0.42:8332
+avg_block_time = 120
+# Everything else omitted — missing keys behave as empty.
+
+
+# ---------------------------------------------------------------------------
+# TIPS
+# ---------------------------------------------------------------------------
+# * Start minimal: [coin] + reward + one source is enough. Add price when a
+#   market forms, remove fallbacks as live sources come online.
+# * Sanity: minepick cross-checks 86400/avg_block_time against the pool's
+#   observed blocks-per-day; a >20% divergence marks the estimate
+#   low-confidence rather than printing a confidently wrong number.
+# * Coins here participate in EVERYTHING: per-GPU best-coin ranking, the
+#   summary table, "live" profit from HiveOS stats, and switch suggestions.

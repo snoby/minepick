@@ -26,7 +26,7 @@ import sys
 import urllib.request
 import urllib.error
 
-ENV_KEYS = ("HASHRATE_NO_API_KEY", "HIVEOS_API_KEY", "POWER_COST", "FARMS", "MODEL_ALIASES", "COINS", "OVERRIDES", "LIVE_STATS", "OFFLINE", "OCTOMINERS")
+ENV_KEYS = ("HASHRATE_NO_API_KEY", "HIVEOS_API_KEY", "POWER_COST", "FARMS", "MODEL_ALIASES", "COINS", "OVERRIDES", "LIVE_STATS", "OFFLINE", "OCTOMINERS", "LOCAL_COINS_FILE")
 
 
 def load_envfile() -> None:
@@ -390,6 +390,8 @@ def match_device(model_name: str, table: dict):
 
 _price_cache = {}
 
+_local_rows = {}   # populated by hive(): {key_lower: {price, yield_rate, ...}}
+
 _bench_cache = {}   # coin -> benchmarks payload (per-coin: hashrates are algo-specific)
 
 
@@ -435,14 +437,20 @@ def coin_entry(ticker: str):
 
 def coin_price_lookup(ticker: str):
     """USD price for a ticker, cached for the process lifetime.
-    Uses the one unfiltered /coins list; falls back to a per-coin query if the
-    list is unavailable or doesn't carry the ticker."""
+    Uses the one unfiltered /coins list; falls back to per-coin query if the
+    list is unavailable; falls back to local_coins.ini prices last."""
     if not ticker:
         return None
     t = ticker.upper()
     if t in _price_cache:
         return _price_cache[t]
     v = None
+    # local coins first: they are by definition absent from hashrate.no, so an
+    # API probe for them is wasted quota
+    entry = _local_rows.get(t.lower())
+    if entry and entry.get("price") is not None:
+        _price_cache[t] = entry["price"]
+        return entry["price"]
     it = coin_entry(t)
     if it:
         try:
@@ -458,6 +466,10 @@ def coin_price_lookup(ticker: str):
                     break
         except (RuntimeError, KeyError, TypeError, ValueError):
             v = None
+    if v is None:
+        entry = _local_rows.get(t.lower())
+        if entry and entry.get("price") is not None:
+            v = entry["price"]
     _price_cache[t] = v
     return v
 
@@ -479,6 +491,300 @@ def coin_matches(mining_coins, best_coin) -> bool:
         if c == b or COIN_ALIASES.get(c) == str(best_coin).upper():
             return True
     return False
+
+
+# ---------------- Local coins (hashrate.no-unknown coins) ----------------
+#
+# Coins declared in local_coins.ini are ranked from live network data instead
+# of hashrate.no estimates. See local_coins.ini.example for the full format.
+#
+#   blocks_per_day = 86400 / avg_block_time          (observed timestamps preferred)
+#   coins_per_day  = blocks_per_day * reward
+#   yield_per_hash = coins_per_day / network_hashrate
+#   profit(H, W)   = yield_per_hash * H * price - W * 24/1000 * cost
+
+LOCAL_COIN_KEYS = ("label", "algorithm", "reward", "price", "price_api",
+                   "pool_api", "node_rpc", "avg_block_time", "network_hashrate")
+
+
+def local_coins_file() -> str:
+    """First existing local_coins.ini path, or ''. Searched in order:
+    $LOCAL_COINS_FILE, ~/.local_coins.ini, <script_dir>/local_coins.ini, ./local_coins.ini."""
+    if os.environ.get("LOCAL_COINS_FILE"):
+        p = os.path.expanduser(os.environ["LOCAL_COINS_FILE"])
+        return p if os.path.isfile(p) else ""
+    candidates = [
+        os.path.expanduser("~/.local_coins.ini"),
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), "local_coins.ini"),
+        os.path.join(os.getcwd(), "local_coins.ini"),
+    ]
+    return next((c for c in candidates if os.path.isfile(c)), "")
+
+
+def load_local_coins(path: str) -> dict:
+    """Parse the INI into {key: {setting: value}}; unknown keys are dropped with
+    a warning so typos (rewrd=100) don't silently produce zero-profit coins."""
+    import configparser
+    out = {}
+    cp = configparser.ConfigParser()
+    try:
+        cp.read(path)
+    except configparser.Error as e:
+        sys.stderr.write(f"minepick: ignoring malformed local_coins file {path}: {e}\n")
+        return out
+    for section in cp.sections():
+        coin = {k: (cp.get(section, k, fallback="") or "").strip()
+                for k in LOCAL_COIN_KEYS}
+        unknown = [k for k in cp[section] if k not in LOCAL_COIN_KEYS]
+        if unknown:
+            sys.stderr.write(f"minepick: local_coins [{section}]: ignoring unknown key(s): "
+                             f"{', '.join(unknown)} (typo? see local_coins.ini.example)\n")
+        out[section] = coin
+    return out
+
+
+def _http_json_plain(url: str, timeout: int = 20):
+    """GET any JSON URL (pool APIs, CoinGecko). Raises on failure."""
+    req = urllib.request.Request(url, headers={"User-Agent": "minepick/1.0"})
+    with urllib.request.urlopen(req, timeout=timeout) as r:
+        return json.loads(r.read().decode())
+
+
+def _node_rpc(url: str, method: str, params: list, timeout: int = 20):
+    """Bitcoin-style JSON-RPC POST; url may carry user:pass@host:port for basic auth."""
+    import base64
+    import urllib.parse
+    parsed = urllib.parse.urlparse(url)
+    userinfo = ""
+    if "@" in parsed.netloc:
+        userinfo, netloc = parsed.netloc.split("@", 1)
+    else:
+        netloc = parsed.netloc
+    headers = {"Content-Type": "application/json"}
+    if userinfo:
+        headers["Authorization"] = "Basic " + base64.b64encode(userinfo.encode()).decode()
+    body = json.dumps({"jsonrpc": "1.0", "id": "minepick",
+                       "method": method, "params": params}).encode()
+    req = urllib.request.Request(urllib.parse.urlunparse(parsed._replace(netloc=netloc)),
+                                 data=body, headers=headers)
+    with urllib.request.urlopen(req, timeout=timeout) as r:
+        data = json.loads(r.read().decode())
+    if isinstance(data, dict) and data.get("error"):
+        raise RuntimeError(f"node RPC error: {data['error']}")
+    return data.get("result")
+
+
+def price_lookup_local(coin: dict) -> float:
+    """Price per the config: manual `price` first, then price_api (coingecko:)."""
+    if coin.get("price") not in ("", None):
+        try:
+            return float(coin["price"])
+        except ValueError:
+            sys.stderr.write(f"minepick: bad price value {coin['price']!r}; ignoring\n")
+    api = (coin.get("price_api") or "").strip()
+    if api.lower().startswith("coingecko:"):
+        cg_id = api.split(":", 1)[1]
+        try:
+            data = _http_json_plain(f"https://api.coingecko.com/api/v3/simple/price?ids={cg_id}&vs_currencies=usd")
+            return float(data[cg_id]["usd"])
+        except Exception as e:
+            sys.stderr.write(f"minepick: coingecko price fetch failed for {cg_id}: {e}\n")
+    return None
+
+
+def pool_network_stats(pool_api: str) -> dict:
+    """Miningcore-style: {network_hashrate, avg_block_time, observed_blocks_per_day, source}.
+    Only fields present in the payload are set; caller decides fallbacks."""
+    data = _http_json_plain(pool_api)
+    out = {"source": "pool_api"}
+    nh = None
+    for k in ("networkHashrate", "networkHashRate", "network_hashrate"):
+        if isinstance(data, dict) and data.get(k):
+            nh = float(data[k]); break
+    if nh is None and isinstance(data, dict):
+        nh = ((data.get("poolStats") or {}).get("networkHashrate"))
+        nh = float(nh) if nh else None
+    if nh:
+        out["network_hashrate"] = nh
+    bs = (data.get("blockStats") or {}) if isinstance(data, dict) else {}
+    # observed blocks/day straight from the pool when available
+    for k in ("blocksPerDay", "blocksPerDayAvg"):
+        if bs.get(k):
+            try:
+                out["observed_blocks_per_day"] = float(bs[k])
+            except (TypeError, ValueError):
+                pass
+            break
+    if bs.get("lastNetworkBlockTime"):
+        try:
+            ts = bs["lastNetworkBlockTime"]
+            if isinstance(ts, str):
+                from datetime import datetime, timezone
+                ts = datetime.fromisoformat(ts.replace("Z", "+00:00")).timestamp()
+            age = max(0.0, __import__("time").time() - float(ts))
+            out["block_age_s"] = age
+        except (TypeError, ValueError):
+            pass
+    return out
+
+
+def node_network_stats(node_rpc: str, n_blocks: int = 100) -> dict:
+    """Node fallback: getmininginfo networkhashps + observed avg block time from
+    the last n_blocks timestamps via getblockstats."""
+    out = {"source": "node_rpc"}
+    mi = _node_rpc(node_rpc, "getmininginfo", [])
+    if isinstance(mi, dict):
+        for k in ("networkhashps", "networkhashps", "netmhashps"):
+            if mi.get(k):
+                out["network_hashrate"] = float(mi[k]); break
+        if "networkhashps" not in mi and mi.get("difficulty") and mi.get("blocktime"):
+            pass  # deliberately no difficulty math — block-time method only
+    def _walk_two_blocks():
+        """avg block time from two timestamps n_blocks apart (works even when
+        getblockstats returns a scalar 'time')."""
+        tip = _node_rpc(node_rpc, "getblockcount", [])
+        h0 = _node_rpc(node_rpc, "getblockhash", [tip - n_blocks])
+        t0 = (_node_rpc(node_rpc, "getblock", [h0]) or {}).get("time")
+        h1 = _node_rpc(node_rpc, "getblockhash", [tip])
+        t1 = (_node_rpc(node_rpc, "getblock", [h1]) or {}).get("time")
+        if t0 and t1 and float(t1) > float(t0):
+            return (float(t1) - float(t0)) / n_blocks
+        return None
+
+    try:
+        bs = _node_rpc(node_rpc, "getblockstats", [n_blocks])
+        if isinstance(bs, dict):
+            times = bs.get("time")
+            if isinstance(times, (list, tuple)) and len(times) >= 2:
+                span = float(times[-1]) - float(times[0])
+                if span > 0:
+                    out["avg_block_time"] = span / (len(times) - 1)
+    except RuntimeError:
+        pass  # getblockstats unsupported: fall through to the two-block walk
+    if "avg_block_time" not in out:
+        try:
+            abt = _walk_two_blocks()
+            if abt:
+                out["avg_block_time"] = abt
+        except (RuntimeError, TypeError, ValueError):
+            pass
+    return out
+
+
+def local_coin_yield(coin: dict) -> dict:
+    """Compute yield-per-hashrate for one local coin from its configured sources.
+    Returns {yield_per_hash, price, source, confidence, notes:[...]} or {} if
+    insufficient data — never guesses."""
+    notes = []
+    stats = {}
+    if coin.get("pool_api"):
+        try:
+            stats = pool_network_stats(coin["pool_api"])
+        except Exception as e:
+            notes.append(f"pool_api failed: {e}")
+    if not stats.get("network_hashrate") and coin.get("node_rpc"):
+        try:
+            stats = node_network_stats(coin["node_rpc"])
+        except Exception as e:
+            notes.append(f"node_rpc failed: {e}")
+    try:
+        reward = float(coin.get("reward") or 0)
+    except ValueError:
+        reward = 0.0
+    network_hashrate = stats.get("network_hashrate")
+    if not network_hashrate and coin.get("network_hashrate"):
+        try:
+            network_hashrate = float(coin["network_hashrate"])
+            notes.append("using manual network_hashrate (no live source)")
+        except ValueError:
+            pass
+
+    avg_bt = stats.get("avg_block_time")
+    bpd = None
+    if avg_bt and avg_bt > 0:
+        bpd = 86400.0 / avg_bt
+    elif stats.get("observed_blocks_per_day"):
+        bpd = stats["observed_blocks_per_day"]
+    elif coin.get("avg_block_time"):
+        try:
+            abt = float(coin["avg_block_time"])
+            if abt > 0:
+                bpd = 86400.0 / abt
+                notes.append(f"using nominal avg_block_time={abt}s (no live timestamps)")
+        except ValueError:
+            pass
+
+    confidence = "high"
+    if not stats.get("avg_block_time") and coin.get("avg_block_time"):
+        confidence = "low"
+    # cross-check: pool-observed blocks/day vs 86400/measured avg block time
+    if stats.get("observed_blocks_per_day") and bpd and stats.get("avg_block_time"):
+        pool_bpd = stats["observed_blocks_per_day"]
+        if pool_bpd > 0 and abs(bpd - pool_bpd) / pool_bpd > 0.20:
+            confidence = "low"
+            notes.append(f"block-time divergence: computed {bpd:.1f}/day vs pool observed "
+                         f"{pool_bpd:.1f}/day")
+
+    if reward <= 0 or not network_hashrate or not bpd:
+        return {"error": "insufficient data", "notes": notes,
+                "missing": [n for n, v in (("reward", reward), ("network_hashrate", network_hashrate),
+                                           ("blocks_per_day", bpd)) if not v]}
+
+    coins_per_day = bpd * reward
+    yph = coins_per_day / network_hashrate
+    price = price_lookup_local(coin)
+    return {"yield_per_hash": yph, "coins_per_day_network": coins_per_day,
+            "blocks_per_day": bpd, "reward": reward,
+            "network_hashrate": network_hashrate, "price": price,
+            "source": stats.get("source"), "confidence": confidence,
+            "notes": notes}
+
+
+def build_local_coin_rows(local_coins: dict, cost) -> dict:
+    """Compute rows for every configured local coin.
+    Returns {coin_key: {table_row, yield_rate, price, meta, per_gpu_profit}}.
+    per_gpu_profit(H, W) computes a single GPU's day-profit for this coin, or
+    is None when no price is known (coin still ranks by yield via live stats)."""
+    out = {}
+    for key, coin in local_coins.items():
+        info = local_coin_yield(coin)
+        if "error" in info:
+            sys.stderr.write(f"minepick: local coin '{key}': {info['error']} "
+                             f"(missing: {', '.join(info.get('missing', []))})\n")
+            for n in info.get("notes", []):
+                sys.stderr.write(f"minepick: local coin '{key}': {n}\n")
+            continue
+        yph = info["yield_per_hash"]
+        price = info.get("price")
+        label = coin.get("label") or key
+        row = {
+            "device_id": f"local:{key}", "device": f"{label} (local)",
+            "brand": "local-coin", "view": "profit", "coin": key.upper(),
+            "yield_day": None, "revenue_day": None, "profit_day": None,
+            "cost": cost, "local_coin": True,
+            "confidence": info.get("confidence"), "source": info.get("source"),
+            "notes": info.get("notes", []),
+        }
+        if price is not None:
+            def per_gpu_profit(H, W, _yph=yph, _price=price):
+                return _yph * H * _price - W * 24 / 1000 * (cost if cost is not None else 0.10)
+        else:
+            per_gpu_profit = None
+        out[key] = {
+            "table_row": row,
+            "yield_rate": yph,
+            "price": price,
+            "meta": info,
+            "per_gpu_profit": per_gpu_profit,
+        }
+    return out
+
+
+def coin_price_lookup_local(key: str, local_rows: dict):
+    entry = local_rows.get(key.lower())
+    if entry:
+        return entry.get("price")
+    return None
 
 
 # ---------------- HiveOS inventory ----------------
@@ -678,6 +984,27 @@ def hive(args):
     # ONE hashrate.no fetch for all devices, then local matching
     table, per_coin, yield_rates = hr_fetch_all_devices(args.kind, args.cost)
 
+    # LOCAL COINS (hashrate.no-unknown): merge their yields/prices into the
+    # same dicts the rest of the pipeline reads, so live-stat profit, rig
+    # rollups and switch suggestions work for them unchanged.
+    lc_path = local_coins_file()
+    if lc_path:
+        global _local_rows
+        _local_rows = build_local_coin_rows(load_local_coins(lc_path), args.cost)
+        for key, entry in _local_rows.items():
+            cu = key.upper()
+            yield_rates[cu] = entry["yield_rate"]
+            # mined-coin profit lookups: use live HiveOS hashrate at render time
+            # is impossible here (table lookup is per model slug), so estimate
+            # per-coin profits at the benchmark hashrate of each matched GPU
+            # model is NOT available — instead the per-GPU live path below
+            # computes exact profits from measured hashrates.
+            per_coin[f"local:{cu}"] = entry  # exposes meta to JSON consumers
+        local_meta = {k.upper(): e["meta"] for k, e in _local_rows.items()}
+    else:
+        _local_rows.clear()
+        local_meta = {}
+
     # Rig-level breakout: best coin per rig via per-GPU model match
     rigs = {}
     unmatched = set()
@@ -701,6 +1028,22 @@ def hive(args):
                 rev = yph * inv["live_hash"] * price
                 watts = inv.get("live_power") or 0
                 live_profit = rev - watts * 24 / 1000 * (args.cost if args.cost is not None else 0.10)
+        # local coins compete for best-coin when live stats exist: their yield
+        # comes from network math, profit from the GPU's measured hashrate/watts
+        local_best = None
+        if inv.get("live_hash"):
+            for lkey, lentry in _local_rows.items():
+                if not lentry.get("per_gpu_profit"):
+                    continue
+                lp = lentry["per_gpu_profit"](inv["live_hash"], inv.get("live_power") or 0)
+                if lp is None:
+                    continue
+                if local_best is None or lp > local_best[1]:
+                    local_best = (lkey.upper(), lp)
+        if local_best and (best is None or not isinstance(best.get("profit_day"), (int, float))
+                           or local_best[1] > best["profit_day"]):
+            best = {"coin": local_best[0], "profit_day": local_best[1],
+                    "revenue_day": None, "local_coin": True}
         rig["gpus"].append({"gpu": inv.get("gpu"),
                             "best_coin": best and best["coin"],
                             "best_profit_day": best and best.get("profit_day"),
@@ -716,7 +1059,15 @@ def hive(args):
             s = slug(inv["gpu"])
             mcu = COIN_ALIASES.get(str(inv["mining_coins"][0]).lower(),
                                    str(inv["mining_coins"][0]).upper())
-            if str((best.get("coin") or "")).upper() == mcu:
+            local_entry = _local_rows.get(mcu.lower())
+            if local_entry and inv.get("live_hash"):
+                # local coin: profit from measured hashrate/watts, not the table
+                lp = local_entry["per_gpu_profit"](inv["live_hash"], inv.get("live_power") or 0) if local_entry.get("per_gpu_profit") else None
+                if isinstance(lp, (int, float)):
+                    rig["rig_mining_profit_day"] = rig.get("rig_mining_profit_day", 0.0) + lp
+                else:
+                    rig["gain_known"] = False  # local coin without price
+            elif str((best.get("coin") or "")).upper() == mcu:
                 rig["rig_mining_profit_day"] = rig.get("rig_mining_profit_day", 0.0) + (best.get("profit_day") or 0)
             else:
                 mc_profit = per_coin.get(f"{s}|{mcu}") or per_coin.get(f"{SLUG_FIXES.get(s, s)}|{mcu}")

@@ -268,3 +268,144 @@ def test_print_table_summary_smoke(capsys):
     m.print_table(summary)
     out = capsys.readouterr().out
     assert "testfarm" in out and "r1" in out and "PRL" in out
+
+
+# ---------------------------------------------------------------- local coins
+
+LC_INI = """
+[civiclight]
+label = Civiclight
+algorithm = yespower
+reward = 100
+price = 0.42
+pool_api =
+node_rpc = http://user:pass@10.0.0.55:9332
+avg_block_time = 600
+network_hashrate =
+
+[typocoin]
+rewrd = 100
+price = 1
+"""
+
+
+def test_load_local_coins_parses_and_warns_on_unknown_keys(capfd):
+    import tempfile, os as _os
+    with tempfile.NamedTemporaryFile("w", suffix=".ini", delete=False) as fh:
+        fh.write(LC_INI)
+        path = fh.name
+    try:
+        coins = m.load_local_coins(path)
+    finally:
+        _os.unlink(path)
+    assert set(coins) == {"civiclight", "typocoin"}
+    c = coins["civiclight"]
+    assert c["reward"] == "100" and c["price"] == "0.42"
+    assert c["algorithm"] == "yespower"
+    # typo'd key produces a warning, not silent zero-data
+    err = capfd.readouterr().err
+    assert "typocoin" in err and "rewrd" in err
+
+
+def test_local_coin_yield_insufficient_data():
+    info = m.local_coin_yield({"reward": "100"})
+    assert "error" in info
+    assert set(info["missing"]) == {"reward", "network_hashrate", "blocks_per_day"} or \
+           "network_hashrate" in info["missing"]
+
+
+def test_local_coin_yield_with_node_rpc(monkeypatch):
+    """Full node path with canned RPC responses: getmininginfo + getblockstats."""
+    coin = {"label": "Test", "reward": "100", "price": "0.42",
+            "node_rpc": "http://user:pass@n:9332"}
+
+    def fake_rpc(url, method, params, timeout=20):
+        if method == "getmininginfo":
+            return {"networkhashps": 5933.537}
+        if method == "getblockstats":
+            # 100-block window with 1362.8s avg block time (real civiclight shape)
+            t0 = 1_000_000
+            return {"time": [t0 + i * 1362.8 for i in range(101)]}
+        raise RuntimeError(f"unexpected {method}")
+
+    monkeypatch.setattr(m, "_node_rpc", fake_rpc)
+    info = m.local_coin_yield(coin)
+    assert info["source"] == "node_rpc"
+    assert info["confidence"] == "high"
+    assert info["blocks_per_day"] == pytest.approx(86400 / 1362.8)
+    assert info["network_hashrate"] == 5933.537
+    expected_yph = (86400 / 1362.8) * 100 / 5933.537
+    assert info["yield_per_hash"] == pytest.approx(expected_yph)
+    assert info["price"] == 0.42
+
+
+def test_local_coin_yield_block_walk_fallback(monkeypatch):
+    """getblockstats with scalar 'time' (fork quirk) -> two-block timestamp walk."""
+    coin = {"reward": "50", "node_rpc": "http://n:9332"}
+
+    def fake_rpc(url, method, params, timeout=20):
+        if method == "getmininginfo":
+            return {"networkhashps": 1000.0}
+        if method == "getblockstats":
+            return {"time": 1_234_567}  # scalar, not a list
+        if method == "getblockcount":
+            return 83_047
+        if method == "getblockhash":
+            return "hash_old" if params[0] == 82_947 else "hash_tip"
+        if method == "getblock":
+            return {"time": 1_900_000 if params[0] == "hash_tip" else 1_763_720}
+        raise RuntimeError(method)
+
+    monkeypatch.setattr(m, "_node_rpc", fake_rpc)
+    info = m.local_coin_yield(coin)
+    assert info["blocks_per_day"] == pytest.approx(86400 / ((1_900_000 - 1_763_720) / 100))
+
+
+def test_local_coin_yield_nominal_blocktime_is_low_confidence(monkeypatch):
+    coin = {"reward": "100", "price": "0.5", "avg_block_time": "600",
+            "network_hashrate": "1000"}
+    # no sources reachable: stats empty; nominal fallback engages
+    monkeypatch.setattr(m, "pool_network_stats", lambda url: (_ for _ in ()).throw(RuntimeError("x")))
+    info = m.local_coin_yield(coin)
+    assert info["confidence"] == "low"
+    assert any("nominal" in n for n in info["notes"])
+    assert info["blocks_per_day"] == pytest.approx(144.0)
+
+
+def test_local_coin_yield_no_price_ranks_by_yield_only(monkeypatch):
+    coin = {"reward": "100", "node_rpc": "http://n:9332"}
+
+    def fake_rpc(url, method, params, timeout=20):
+        if method == "getmininginfo":
+            return {"networkhashps": 1000.0}
+        if method == "getblockstats":
+            return {"time": [0, 864]}  # 100 blocks/day
+        raise RuntimeError(method)
+
+    monkeypatch.setattr(m, "_node_rpc", fake_rpc)
+    info = m.local_coin_yield(coin)
+    assert info["price"] is None
+    assert info["yield_per_hash"] == pytest.approx(100 * 100 / 1000)
+
+
+def test_build_local_coin_rows_per_gpu_profit(monkeypatch):
+    coins = {"c": {"reward": "100", "price": "1.0", "avg_block_time": "600",
+                   "network_hashrate": "1000"}}
+    rows = m.build_local_coin_rows(coins, 0.10)
+    e = rows["c"]
+    # yph = (144 blocks * 100 coins)/1000H = 14.4 coins/day per H/s
+    # H=1 hashes/s, free power -> $14.40/day
+    assert e["per_gpu_profit"](1.0, 0) == pytest.approx(14.4)
+    # with watts: 100W -> 0.1kWh*24*0.10 = $0.24 cost
+    assert e["per_gpu_profit"](1.0, 100) == pytest.approx(14.4 - 0.24)
+
+
+def test_price_lookup_falls_back_to_local_rows():
+    m._local_rows.clear()
+    m._local_rows["mycoin"] = {"price": 0.123, "yield_rate": 1.0}
+    try:
+        assert m.coin_price_lookup_local("mycoin", m._local_rows) == 0.123
+        assert m.coin_price_lookup("MYCOIN") == 0.123
+    finally:
+        m._local_rows.clear()
+        m._price_cache.clear()
