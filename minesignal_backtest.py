@@ -7,13 +7,14 @@ the next `horizon` days of revenue and charge cost_frac * revenue_day.
 Reports: net edge vs always-stay, per-verdict stats, switch list. Stdlib only.
 
 Usage:
-  minesignal_backtest --coin PRL [--cost-frac 0.5] [--horizon 7]
-  minesignal_backtest --pair PRL,QUAN --days 14 [--gpu-map rig:hash_stay:hash_move,...]
-Output: JSON on stdout. Nothing else. (minepick ethos)
+  minesignal_backtest --coin PRL [--cost-frac 0.5] [--horizon 7] [--format table]
+  minesignal_backtest --pair PRL,QUAN --days 14 [--gpu-map rig:hash_stay:hash_move,...] [--format table]
+Output: JSON (default) or --format table on stdout. (minepick ethos)
 """
 import argparse
 import json
 import os
+import re
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -113,6 +114,61 @@ def pairwise_replay(hist_stay, hist_move, gpu_hash=1.0, days=14,
             "per_day": per_day}
 
 
+ANSI_RE = re.compile(r"\x1b\[[0-9;]*m")
+
+
+def _vpad(s, width, right=False):
+    vis = len(ANSI_RE.sub("", s))
+    return (" " * max(0, width - vis) + s) if right else (s + " " * max(0, width - vis))
+
+
+def print_table(payload: dict) -> None:
+    """Render the backtest payload as an aligned ASCII table (minepick style)."""
+    pair = payload.get("pair")
+    if pair:
+        stay, move, days = pair["stay"], pair["move"], pair["days"]
+        cf, hz = payload.get("cost_frac"), payload.get("horizon")
+        print(f"\nPairwise replay: {stay} -> {move}  |  last {days} days"
+              f"  |  switch cost {cf:.2f} day  |  horizon {hz}d")
+        print()
+        hdr = ["Rig", "Switch days", "Net edge/hash", "Verdict"]
+        rows = []
+        for g in pair["gpus"]:
+            sd = g["switch_days"]
+            edge = g["net_edge_per_hash"]
+            verdict = ("SWITCH" if sd else "hold")
+            rows.append([g.get("rig", "-"),
+                         ", ".join(f"d{d}" for d in sd) or "-",
+                         f"{edge:+.4f}",
+                         (f"\033[32m{verdict}\033[0m" if sd else
+                          (f"\033[31m{verdict}\033[0m" if edge < 0 else verdict))])
+        widths = [max(len(ANSI_RE.sub("", r[i])) for r in [hdr] + rows) for i in range(len(hdr))]
+        print("  " + " | ".join(_vpad(c, w) for c, w in zip(hdr, widths)))
+        print("  " + "-+-".join("-" * w for w in widths))
+        for r in rows:
+            print("  " + " | ".join(_vpad(c, widths[i], right=(i in (1, 2)))
+                                    for i, c in enumerate(r)))
+        print()
+    elif payload.get("replay"):
+        rp = payload["replay"]
+        print(f"\nReplay: {rp.get('coin')}  |  cost_frac {payload.get('cost_frac')}"
+              f"  |  horizon {payload.get('horizon')}d")
+        print(f"Days scored: {rp.get('days_scored')}  |  stays: {rp.get('stays')}"
+              f"  |  net edge: {rp.get('net_edge'):+.4f}")
+        sw = rp.get("switches") or []
+        if sw:
+            print("\nSwitch events:")
+            hdr = ["Day", "Verdict", "Gain"]
+            rows = [[str(s["day"]), s["verdict"], f"{s['gain']:+.4f}"] for s in sw]
+            widths = [max(len(r[i]) for r in [hdr] + rows) for i in range(len(hdr))]
+            print("  " + " | ".join(_vpad(c, w) for c, w in zip(hdr, widths)))
+            print("  " + "-+-".join("-" * w for w in widths))
+            for r in rows:
+                print("  " + " | ".join(_vpad(c, widths[i], right=(i == 2))
+                                        for i, c in enumerate(r)))
+        print()
+
+
 def main():
     ap = argparse.ArgumentParser(
         description="replay minesignal verdicts over history, net of switch costs")
@@ -127,6 +183,8 @@ def main():
                     help="switch cost as fraction of a day's revenue (default 0.5)")
     ap.add_argument("--horizon", type=int, default=7,
                     help="scoring horizon in days after each signal (default 7)")
+    ap.add_argument("--format", choices=["json", "table"], default="json",
+                    help="output format (default json)")
     args = ap.parse_args()
 
     out = {"mode": "minesignal_backtest", "cost_frac": args.cost_frac,
@@ -173,8 +231,11 @@ def main():
     else:
         ms.fail("nothing to do: use --coin or --pair")
 
-    json.dump(out, sys.stdout, indent=2)
-    sys.stdout.write("\n")
+    if args.format == "table":
+        print_table(out)
+    else:
+        json.dump(out, sys.stdout, indent=2)
+        sys.stdout.write("\n")
 
 
 if __name__ == "__main__":

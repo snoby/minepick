@@ -61,3 +61,30 @@ def test_pairwise_no_switch_when_b_always_below():
     hist_b = synth_hist([r * 900 for r in rev_b], rev_b, [0.03] * n)
     res = pairwise_replay(hist_a, hist_b, gpu_hash=1.0, days=10, cost_frac=0.2)
     assert not res["switch_days"]
+
+
+def test_table_format_renders_summary():
+    """--format table prints an aligned ASCII summary, not JSON."""
+    import minesignal_backtest as mb
+    n = 20
+    rev_a = [0.02] * n
+    rev_b = [0.01] * n
+    hist_a = synth_hist([r * 900 for r in rev_a], rev_a, [0.03] * n)
+    hist_b = synth_hist([r * 900 for r in rev_b], rev_b, [0.03] * n)
+    results = []
+    for g in ({"rig": "3070", "hash_stay": 70.8, "hash_move": 270.0},
+              {"rig": "3080ti", "hash_stay": 116.2, "hash_move": 426.4}):
+        hs = dict(hist_a); hs["revenue"] = [{"v": r["v"] * g["hash_stay"], "t": r["t"]} for r in hist_a["revenue"]]
+        hm = dict(hist_b); hm["revenue"] = [{"v": r["v"] * g["hash_move"], "t": r["t"]} for r in hist_b["revenue"]]
+        res = mb.pairwise_replay(hs, hm, gpu_hash=1.0, days=10, cost_frac=0.5)
+        res["rig"] = g["rig"]
+        results.append(res)
+    out = {"mode": "minesignal_backtest", "cost_frac": 0.5, "horizon": 7,
+           "pair": {"stay": "PRL", "move": "QUAN", "days": 10, "gpus": results}}
+    import io, contextlib
+    buf = io.StringIO()
+    with contextlib.redirect_stdout(buf):
+        mb.print_table(out)
+    t = buf.getvalue()
+    assert "Rig" in t and "3070" in t and "3080ti" in t
+    assert "switch" in t.lower()
