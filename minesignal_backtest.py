@@ -116,6 +116,35 @@ def pairwise_replay(hist_stay, hist_move, gpu_hash=1.0, days=14,
 
 ANSI_RE = re.compile(r"\x1b\[[0-9;]*m")
 
+# Coin-page revenue series units, verified against hashrate.no benchmark
+# consensus 2026-10-04: PRL series = $/day per TH/s, QUAN = per GH/s.
+# Convert real H/s -> series unit: divide by the factor below.
+SERIES_UNIT_FACTOR = {
+    "PRL": 1e12,   # TH/s
+    "QUAN": 1e9,   # GH/s
+}
+
+
+def parse_gpu_map(spec, unit_stay=None, unit_move=None, stay="", move=""):
+    """Parse "rig:hash_stay:hash_move,..." with REAL H/s values (benchmark
+    format) and convert each hashrate into its coin's revenue-series unit.
+    Unknown coin pairs require explicit --unit-stay/--unit-move factors."""
+    f_stay = unit_stay if unit_stay is not None else SERIES_UNIT_FACTOR.get(stay)
+    f_move = unit_move if unit_move is not None else SERIES_UNIT_FACTOR.get(move)
+    if f_stay is None or f_move is None:
+        ms.fail(f"unknown revenue-series unit for {stay}/{move}: pass "
+                "--unit-stay and --unit-move (H/s per series unit)")
+    f_stay, f_move = float(f_stay), float(f_move)
+    gpus = []
+    for ent in spec.split(","):
+        parts = ent.strip().split(":")
+        if len(parts) != 3:
+            ms.fail(f"bad --gpu-map entry: {ent}")
+        gpus.append({"rig": parts[0],
+                     "hash_stay": float(parts[1]) / f_stay,
+                     "hash_move": float(parts[2]) / f_move})
+    return gpus
+
 
 def _vpad(s, width, right=False):
     vis = len(ANSI_RE.sub("", s))
@@ -178,7 +207,15 @@ def main():
                     help="pairwise: replay the last N days (default 14)")
     ap.add_argument("--gpu-hash", type=float, default=1.0,
                     help="pairwise: hashrate ratio move/stay (default 1.0)")
-    ap.add_argument("--gpu-map", help='pairwise: "rig:hash_stay:hash_move,..." per-GPU map')
+    ap.add_argument("--gpu-map", help='pairwise: "rig:hash_stay:hash_move,..." '
+                    'REAL H/s (benchmark format); converted to series units '
+                    'automatically for known coins')
+    ap.add_argument("--unit-stay", type=float,
+                    help="H/s per revenue-series unit for the stay coin "
+                         "(e.g. 1e12 = series is per TH/s); required for coins "
+                         "not in the built-in unit table")
+    ap.add_argument("--unit-move", type=float,
+                    help="H/s per revenue-series unit for the move coin")
     ap.add_argument("--cost-frac", type=float, default=0.5,
                     help="switch cost as fraction of a day's revenue (default 0.5)")
     ap.add_argument("--horizon", type=int, default=7,
@@ -195,13 +232,8 @@ def main():
         hists = {stay: ms.fetch_coin_page(stay), move: ms.fetch_coin_page(move)}
         gpus = []
         if args.gpu_map:
-            for ent in args.gpu_map.split(","):
-                parts = ent.strip().split(":")
-                if len(parts) != 3:
-                    ms.fail(f"bad --gpu-map entry: {ent}")
-                gpus.append({"rig": parts[0],
-                             "hash_stay": float(parts[1]),
-                             "hash_move": float(parts[2])})
+            gpus = parse_gpu_map(args.gpu_map, unit_stay=args.unit_stay,
+                                 unit_move=args.unit_move, stay=stay, move=move)
         else:
             gpus = [{"rig": "default", "hash_stay": 1.0,
                      "hash_move": args.gpu_hash}]

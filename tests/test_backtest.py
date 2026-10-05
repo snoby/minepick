@@ -88,3 +88,48 @@ def test_table_format_renders_summary():
     t = buf.getvalue()
     assert "Rig" in t and "3070" in t and "3080ti" in t
     assert "switch" in t.lower()
+
+
+def test_gpu_map_real_hashrates_converted_via_series_units():
+    """gpu-map takes REAL H/s (benchmark format). The tool converts to each
+    coin's series unit (PRL series = $/day per TH/s, QUAN = per GH/s —
+    verified against hashrate.no benchmark consensus 2026-10-04).
+    With correct units QUAN per-GPU revenue stays BELOW PRL for the whole
+    14-day window (subagent ground truth: hold, peak rel ~ -6..-12%)."""
+    import minesignal_backtest as mb
+    import json as _json
+    fix = os.path.join(os.path.dirname(__file__), "fixtures")
+    prl = _json.load(open(os.path.join(fix, "prl_2026-10-04.json")))
+    quan = _json.load(open(os.path.join(fix, "quan_2026-10-04.json")))
+    # 3080 Ti real H/s from hashrate.no benchmarks: 1.1618e14 PRL, 4.2637e8 QUAN
+    gpus = mb.parse_gpu_map(
+        "3080ti:1.1618e14:4.2637e8", unit_stay=None, unit_move=None,
+        stay="PRL", move="QUAN")
+    g = gpus[0]
+    assert abs(g["hash_stay"] - 116.18) < 0.01, g   # TH/s series units
+    assert abs(g["hash_move"] - 0.42637) < 1e-4, g  # GH/s series units
+
+def test_gpu_map_unknown_coin_requires_unit_override():
+    import minesignal_backtest as mb
+    try:
+        mb.parse_gpu_map("x:1e12:1e9", unit_stay=None, unit_move=None,
+                         stay="ZZZ", move="QQQ")
+        raise AssertionError("expected SystemExit for unknown coins without unit overrides")
+    except SystemExit:
+        pass
+
+def test_pairwise_real_units_no_switch_on_prl_quan():
+    """Backtest verification: with unit-correct hashrates the signal never
+    switches PRL->QUAN in the 14-day window (QUAN rel stays negative)."""
+    import minesignal_backtest as mb
+    import json as _json
+    fix = os.path.join(os.path.dirname(__file__), "fixtures")
+    prl = _json.load(open(os.path.join(fix, "prl_2026-10-04.json")))
+    quan = _json.load(open(os.path.join(fix, "quan_2026-10-04.json")))
+    hs = dict(prl); hs["revenue"] = [{"v": r["v"] * 116.18, "t": r["t"]} for r in prl["revenue"]]
+    hm = dict(quan); hm["revenue"] = [{"v": r["v"] * 0.42637, "t": r["t"]} for r in quan["revenue"]]
+    res = mb.pairwise_replay(hs, hm, gpu_hash=1.0, days=14, cost_frac=0.5)
+    assert res["switch_days"] == [], res["switch_days"]
+    assert res["net_edge_per_hash"] <= 0
+    rels = [d["rel"] for d in res["per_day"]]
+    assert max(rels) < 0.5  # QUAN never comes close to +50% of PRL per GPU
