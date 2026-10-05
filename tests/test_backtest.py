@@ -36,3 +36,28 @@ def test_backtest_cost_monotonicity():
     hist = synth_hist([r * 900 for r in rev], rev, [0.03] * len(rev))
     edges = [replay(hist, cost_frac=c)["net_edge"] for c in (0.0, 0.25, 1.0)]
     assert edges[0] >= edges[1] >= edges[2], edges
+
+
+def test_pairwise_switch_decision_uses_relative_revenue():
+    """GPU should switch A->B when B's relative revenue beats A's by more
+    than the switch cost, using only data up to each day."""
+    from minesignal_backtest import pairwise_replay
+    n = 20
+    rev_a = [0.02] * n                     # coin A flat
+    rev_b = [0.01] * 15 + [0.03] * 5       # coin B jumps above A late
+    hist_a = synth_hist([r * 900 for r in rev_a], rev_a, [0.03] * n)
+    hist_b = synth_hist([r * 900 for r in rev_b], rev_b, [0.03] * n)
+    res = pairwise_replay(hist_a, hist_b, gpu_hash=1.0, days=10, cost_frac=0.2)
+    assert res["switch_days"], "should have flagged switch days after B jumps"
+    assert res["net_edge_per_hash"] != 0
+
+
+def test_pairwise_no_switch_when_b_always_below():
+    from minesignal_backtest import pairwise_replay
+    n = 20
+    rev_a = [0.02] * n
+    rev_b = [0.01] * n
+    hist_a = synth_hist([r * 900 for r in rev_a], rev_a, [0.03] * n)
+    hist_b = synth_hist([r * 900 for r in rev_b], rev_b, [0.03] * n)
+    res = pairwise_replay(hist_a, hist_b, gpu_hash=1.0, days=10, cost_frac=0.2)
+    assert not res["switch_days"]

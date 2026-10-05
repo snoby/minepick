@@ -70,7 +70,9 @@ def pairwise_replay(hist_stay, hist_move, gpu_hash=1.0, days=14,
     ts_stay = [r["t"] for r in rev_stay]
     ts_move = [r["t"] for r in rev_move]
     n = len(ts_stay)
-    start = max(45, n - days)                 # warmup + last `days` days
+    # warmup shrinks for young histories (same adaptation as replay()); the
+    # window is the last `days` days of whatever is scoreable.
+    start = max(min(45, max(1, n - 2)), n - days)
     switch_days, per_day = [], []
     net = 0.0
     in_switch = False
