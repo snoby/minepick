@@ -88,3 +88,17 @@ def test_regime_pump_full_retrace_not_abandon():
     rev = [0.02] * 40 + [0.05, 0.06, 0.055, 0.04] + [0.021] * 3
     hist = synth_hist([r * 900 for r in rev], rev, [0.03] * len(rev))
     assert ms.signals_for("TST", hist)["verdict"] != "abandon"
+
+
+import json
+
+FIXTURE = os.path.join(os.path.dirname(__file__), "fixtures", "prl_2026-10-04.json")
+
+
+def test_prl_pump_retrace_not_abandon():
+    """Real PRL data (Oct 2026): 3x pump, retrace to 2.15x baseline.
+    Old z7 logic fired 'abandon' here. Must never again."""
+    hist = json.load(open(FIXTURE))
+    sig = ms.signals_for("PRL", hist)
+    assert sig["verdict"] != "abandon"
+    assert sig["regime_ratio"] > 0   # revenue above regime baseline
