@@ -174,6 +174,37 @@ output. `run_tests.sh` reuses `.venv` if pytest is there, else falls back to a
 system pytest, else creates a venv. Regenerate fixtures from a real cache with
 `python3 scripts/extract_fixtures.py`.
 
+## minesignal — switch signals & backtest
+
+`minesignal.py` reads each coin's daily history off its public hashrate.no page
+(no API quota) and emits a trading-style verdict per coin, as JSON only:
+
+| field | meaning |
+|---|---|
+| `regime_ratio` | robust z of log revenue vs a rolling median/MAD baseline that ended 7d ago (skip excludes an in-progress pump; MAD floored at log(1.05) so flat series don't explode) |
+| `regime_median` | raw revenue median of that baseline — feeds the absolute collapse gate |
+| `divergence_7d/3d` | price momentum minus yield momentum — positive = price running ahead of hashrate |
+| `verdict` | `open` (rev > 1.1x baseline AND div7 ≥ 10), `closed`, `fade`, `abandon` (regime ≤ −2.0 OR rev < 0.6x baseline median), `noise` |
+
+Thresholds (45d lookback, skip=7, −2.0, 0.6x, 1.1x, div7≥10, div3≥−5) are
+labeled defaults — pinned by regression fixtures (PRL pump-retrace, QUAN pump
+window, synthetic true collapse) and a false-positive sweep
+(`python3 tools/fp_sweep.py`), not tuned by hand.
+
+`minesignal_backtest.py` replays `signals_day()` over full history, charging a
+switch cost on every verdict flip:
+
+```bash
+python3 minesignal_backtest.py --coin PRL --cost-frac 0.25     # net edge vs always-stay
+python3 minesignal_backtest.py --pair PRL,QUAN --days 14 \     # per-GPU switch replay
+  --gpu-map "rig1:417:52" --cost-frac 0.5
+```
+
+`--pair` answers: would the signal have switched this GPU from the stay coin
+to the move coin, and would that have made money per hash net of switch cost?
+Per-GPU hashrates come from `minepick.py --hive --inventory-only` or the local
+benchmark table.
+
 ## License
 
 MIT — see [LICENSE](LICENSE).
