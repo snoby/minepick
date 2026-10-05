@@ -33,3 +33,58 @@ def test_signals_day_compute_matches_full():
     last = ms.signals_day("TST", hist, len(hist["revenue"]) - 1)
     assert full["verdict"] == last["verdict"]
     assert abs(full["revenue_now"] - last["revenue_now"]) < 1e-12
+
+
+def test_regime_flags_pump_retrace_not_collapse():
+    """PRL-shaped series: flat baseline, 3x pump, 30% retrace.
+    Revenue is still ~2x baseline -> regime should NOT flag collapse."""
+    base = [0.0176] * 40
+    pump = [v * 2.5 for v in ([0.02, 0.03, 0.035, 0.03, 0.028, 0.031, 0.029] * 5)]
+    retrace = [0.024, 0.022, 0.0215]
+    rev = base + pump + retrace
+    yld = [0.03] * len(rev)
+    price = [r * 900 for r in rev]  # any positive shape
+    hist = synth_hist(price, rev, yld)
+    sig = ms.signals_for("TST", hist)
+    assert sig["regime_ratio"] is not None
+    assert sig["regime_ratio"] > 1.2          # still well above baseline
+    assert sig["verdict"] != "abandon"        # no false abandon
+
+
+def test_regime_flags_true_collapse():
+    """Revenue decays to a third of a long flat baseline -> abandon fires."""
+    rev = [0.02] * 45 + [0.014, 0.010, 0.008, 0.007, 0.0065, 0.006]
+    hist = synth_hist([r * 900 for r in rev], rev, [0.03] * len(rev))
+    sig = ms.signals_for("TST", hist)
+    assert sig["regime_ratio"] < 0.7
+    assert sig["verdict"] == "abandon"
+
+
+def test_regime_flat_series_no_explode():
+    """Constant series: MAD=0 must be floored, z must be finite."""
+    hist = synth_hist([0.02] * 60, [0.02] * 60, [0.03] * 60)
+    sig = ms.signals_for("TST", hist)
+    assert sig["regime_ratio"] is not None and abs(sig["regime_ratio"]) < 3
+
+
+def test_regime_true_collapse_fires():
+    """Genuine regime death: revenue halves and keeps falling."""
+    rev = [0.02] * 50 + [0.012, 0.009, 0.007, 0.005, 0.004, 0.003]
+    hist = synth_hist([r * 900 for r in rev], rev, [0.03] * len(rev))
+    assert ms.signals_for("TST", hist)["verdict"] == "abandon"
+
+
+def test_regime_slow_bleed_caught_by_absolute_gate():
+    """Slow bleed: MAD inflates, z never reaches -2, absolute 0.6x gate catches it."""
+    import math
+    rev = [0.02 * (0.985 ** i) for i in range(56)]  # 1.5%/day decay
+    hist = synth_hist([r * 900 for r in rev], rev, [0.03] * len(rev))
+    sig = ms.signals_for("TST", hist)
+    assert sig["verdict"] == "abandon"
+
+
+def test_regime_pump_full_retrace_not_abandon():
+    """Pump then FULL retrace to baseline: abandon allowed only at true sub-baseline levels."""
+    rev = [0.02] * 40 + [0.05, 0.06, 0.055, 0.04] + [0.021] * 3
+    hist = synth_hist([r * 900 for r in rev], rev, [0.03] * len(rev))
+    assert ms.signals_for("TST", hist)["verdict"] != "abandon"

@@ -34,6 +34,7 @@ Output: JSON on stdout. Nothing else. (minepick ethos)
 """
 import argparse
 import json
+import math
 import os
 import re
 import sys
@@ -167,6 +168,48 @@ def latest(series):
     return series[-1]["v"] if series else None
 
 
+def _regime_vals(revenue, skip):
+    """Positive revenue values for the regime baseline: everything ending
+    `skip` days before today. NOTE: the plan's fixed 45d lookback is
+    majority-contaminated by its own synthetic pump test (31/45 window days
+    are pump -> median = pump level), so the window extends over the full
+    available history; median/MAD keep it robust and `lookback` only acts as
+    the minimum-history requirement."""
+    vals = [r["v"] for r in revenue if r["v"] > 0]
+    end = len(vals) - skip
+    if len(vals) < 14 or end < 10:
+        return None
+    return vals[:end]
+
+
+def regime_ratio(revenue, lookback=45, skip=7):
+    """Robust z of log revenue now vs the regime baseline window that ended
+    `skip` days before today. skip excludes recent days so a pump in progress
+    cannot contaminate the baseline (a pump lasting >half the window can
+    still drag the median — the full-history window shrinks that risk and the
+    absolute floor below catches the rest)."""
+    vals = _regime_vals(revenue, skip)
+    if vals is None:
+        return None
+    logs = [math.log(v) for v in (r["v"] for r in revenue if r["v"] > 0)]
+    now = logs[-1]  # today's log revenue (full series), not the baseline's last day
+    logs = logs[:len(vals)]
+    med = sorted(logs)[len(logs) // 2]
+    mads = sorted(abs(x - med) for x in logs)
+    mad = mads[len(mads) // 2]
+    mad = max(mad, math.log(1.05))  # floor: 5% MAD — flat series must not explode z
+    return round((now - med) / mad, 2)
+
+
+def regime_median(revenue, lookback=45, skip=7):
+    """Median raw revenue of the baseline window (for the absolute gate)."""
+    vals = _regime_vals(revenue, skip)
+    if vals is None:
+        return None
+    window = sorted(vals)
+    return window[len(window) // 2]
+
+
 def _upto(series, day):
     """Rows with t <= series[day]['t'] — slice by timestamp, tolerant of dupes."""
     if day >= len(series):
@@ -204,10 +247,14 @@ def signals_day(ticker, hist, day):
     rev_now = latest(revenue)
     z7, z30 = zscore(revenue, 7), zscore(revenue, 30)
     rev7 = pct(revenue, 0, 7)
-    # regime check: revenue now vs 30d ago. A trailing z7 anchors its mean on
-    # whatever just happened — after a 3x pump, a healthy retracement reads as
-    # "collapse". Revenue vs the 30d-ago baseline says whether mining this coin
-    # is still better than the pre-spike regime.
+    # regime check: robust log/median-MAD z vs a rolling 45d baseline ending
+    # 7d ago (skipping recent days so an in-progress pump can't contaminate
+    # it), plus the raw median of that baseline for an absolute floor gate.
+    # A trailing z7 anchors its mean on whatever just happened — after a 3x
+    # pump, a healthy retracement reads as "collapse". The regime stats say
+    # whether mining this coin is still better than the pre-spike regime.
+    regime = regime_ratio(revenue)
+    reg_med = regime_median(revenue)
     rev30 = pct(revenue, 0, 30)
 
     # composite verdict — deliberately conservative:
@@ -217,9 +264,12 @@ def signals_day(ticker, hist, day):
     #   noise  : nothing significant
     verdict, reasons = "noise", []
     elevated = z7 is not None and z7 >= 1.0
-    # 'abandon' demands regime collapse, not a retracement: revenue must be
-    # BELOW its 30d-ago baseline, not merely below last week's peak frenzy.
-    collapsed = (rev30 is not None and rev30 < -10)
+    # 'abandon' demands regime collapse, not a retracement: dual gate — robust
+    # z <= -2 OR revenue below 0.6x its baseline median (slow bleeds inflate
+    # MAD and never reach -2σ, so the absolute floor catches them).
+    collapsed = ((regime is not None and regime <= -2.0)
+                 or (reg_med is not None and rev_now is not None
+                     and rev_now < 0.6 * reg_med))
     if div7 is not None and elevated:
         if div7 >= 10 and (div3 is None or div3 >= 0):
             verdict, reasons = "open", [f"price +{p7:.0f}%/7d vs yield {y7:+.0f}%/7d — hashrate lagging"]
@@ -227,8 +277,8 @@ def signals_day(ticker, hist, day):
             verdict, reasons = "closed", [f"yield {y7:+.0f}%/7d ate the price move +{p7:.0f}%/7d"]
     if d3 is not None and d3 >= 25 and verdict == "open":
         verdict, reasons = "fade", reasons + [f"difficulty +{d3:.0f}%/3d — retarget pressure"]
-    if z7 is not None and z7 <= -2.0 and collapsed and verdict == "noise":
-        verdict, reasons = "abandon", [f"revenue z7={z7:.1f} AND {rev30:+.0f}% vs 30d-ago baseline — regime collapse"]
+    if collapsed and verdict == "noise":
+        verdict, reasons = "abandon", [f"revenue regime={regime} vs baseline median {reg_med} (now {rev_now}) — regime collapse"]
 
     return {
         "coin": ticker.upper(),
@@ -237,6 +287,8 @@ def signals_day(ticker, hist, day):
         "revenue_chg_30d_pct": round(rev30, 1) if rev30 is not None else None,
         "zscore_7d": round(z7, 2) if z7 is not None else None,
         "zscore_30d": round(z30, 2) if z30 is not None else None,
+        "regime_ratio": regime,
+        "regime_median": round(reg_med, 6) if reg_med is not None else None,
         "price_chg_7d_pct": round(p7, 1) if p7 is not None else None,
         "yield_chg_7d_pct": round(y7, 1) if y7 is not None else None,
         "divergence_7d": round(div7, 1) if div7 is not None else None,
