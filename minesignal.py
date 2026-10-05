@@ -270,14 +270,22 @@ def signals_day(ticker, hist, day):
     collapsed = ((regime is not None and regime <= -2.0)
                  or (reg_med is not None and rev_now is not None
                      and rev_now < 0.6 * reg_med))
-    if div7 is not None and elevated:
-        if div7 >= 10 and (div3 is None or div3 >= 0):
-            verdict, reasons = "open", [f"price +{p7:.0f}%/7d vs yield {y7:+.0f}%/7d — hashrate lagging"]
-        elif div7 <= -10:
-            verdict, reasons = "closed", [f"yield {y7:+.0f}%/7d ate the price move +{p7:.0f}%/7d"]
     if d3 is not None and d3 >= 25 and verdict == "open":
         verdict, reasons = "fade", reasons + [f"difficulty +{d3:.0f}%/3d — retarget pressure"]
-    if collapsed and verdict == "noise":
+    # rev/H vs pre-pump baseline gates the OPEN verdict: divergence alone is a
+    # trailing-window artifact (QUAN's z7 went -1.77 during its pump), so
+    # today's revenue must actually be ABOVE the regime baseline for a window
+    # to be open. The closed arm keeps its elevated requirement — revenue can
+    # sit above a (possibly damaged) baseline while the window still closes
+    # around it, and a true regime collapse must outrank 'closed' (below).
+    rev_above_baseline = (rev_now is not None and reg_med is not None
+                          and rev_now > 1.1 * reg_med)
+    if div7 is not None and elevated and verdict in ("noise",):
+        if div7 >= 10 and rev_above_baseline and (div3 is None or div3 >= -5):
+            verdict, reasons = "open", [f"rev/H {rev_now/reg_med:.1f}x baseline, div7={div7:+.0f} — price ahead of hashrate"]
+        elif div7 <= -10:
+            verdict, reasons = "closed", [f"yield {y7:+.0f}%/7d ate the price move +{p7:.0f}%/7d"]
+    if collapsed and verdict in ("noise", "closed"):
         verdict, reasons = "abandon", [f"revenue regime={regime} vs baseline median {reg_med} (now {rev_now}) — regime collapse"]
 
     return {

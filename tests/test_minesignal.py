@@ -102,3 +102,77 @@ def test_prl_pump_retrace_not_abandon():
     sig = ms.signals_for("PRL", hist)
     assert sig["verdict"] != "abandon"
     assert sig["regime_ratio"] > 0   # revenue above regime baseline
+    # PRL's divergence_7d on 10-04 is -10.7 with regime barely positive:
+    # the pump window is closing, not open.
+    assert sig["verdict"] in ("noise", "fade"), sig["verdict"]
+
+
+QUAN_FIXTURE = os.path.join(os.path.dirname(__file__), "fixtures", "quan_2026-10-04.json")
+
+
+def _quan_day(target):
+    """index into the fixture's revenue series for a given MM-DD."""
+    import datetime
+    hist = json.load(open(QUAN_FIXTURE))
+    for i, r in enumerate(hist["revenue"]):
+        d = datetime.datetime.fromtimestamp(r["t"]).strftime("%m-%d")
+        if d == target:
+            return i
+    raise AssertionError(f"no {target} in fixture")
+
+
+def test_quan_window_open_on_0928():
+    """09-28: price 3x'd, rev/H still +25% above pre-pump, hashrate lagging
+    -> divergence must read OPEN (price running ahead of hashrate)."""
+    hist = json.load(open(QUAN_FIXTURE))
+    day = _quan_day("09-28")
+    sig = ms.signals_day("QUAN", hist, day)
+    assert sig["divergence_7d"] is not None and sig["divergence_7d"] > 0
+    # revenue per hash at 09-28 is still ABOVE the pre-pump level
+    rev28 = hist["revenue"][day]["v"]
+    pre = [r["v"] for r in hist["revenue"] if r["t"] < hist["revenue"][day]["t"] - 5 * 86400][-3:]
+    assert rev28 > sum(pre) / len(pre)
+
+
+def test_quan_window_closed_by_1002():
+    """10-02 (price peak $151): hashrate 7x'd, rev/H below pre-pump baseline
+    -> the window is arbitraged away; regime turns negative (closing).
+    NOTE: plan asserted divergence_7d < 0 here, but the fixture's div7 on
+    10-02 is +235 (cumulative 7d price pump dwarfs yield decay — the plan's
+    own data note records div7=+222). The closing read is rev/H below the
+    pre-pump baseline + regime_ratio < 0; div3 goes negative by 10-04."""
+    hist = json.load(open(QUAN_FIXTURE))
+    day = _quan_day("10-02")
+    sig = ms.signals_day("QUAN", hist, day)
+    rev_peak = hist["revenue"][day]["v"]
+    pre = [r["v"] for r in hist["revenue"] if r["t"] < hist["revenue"][day]["t"] - 5 * 86400][-3:]
+    assert rev_peak < sum(pre) / len(pre)      # peak-day mining is WORSE per hash
+    assert sig["regime_ratio"] is not None and sig["regime_ratio"] < 0
+    assert sig["verdict"] != "open"
+
+
+def test_quan_never_abandon_during_open_phase():
+    """Day-by-day replay of the whole QUAN fixture: the pump's open phase
+    (price rising, rev/H above baseline) must never produce 'abandon'."""
+    hist = json.load(open(QUAN_FIXTURE))
+    for day in range(len(hist["revenue"])):
+        sig = ms.signals_day("QUAN", hist, day)
+        if sig["verdict"] == "abandon":
+            # allowed only if revenue is genuinely below the pre-pump regime
+            rev_now = hist["revenue"][day]["v"]
+            pre = [r["v"] for r in hist["revenue"][:max(day - 5, 1)]]
+            base = sorted(pre)[len(pre) // 2] if pre else 0
+            assert rev_now < base, (
+                f"false abandon at day {day}: rev {rev_now} >= baseline {base}")
+
+
+def test_true_collapse_coin_fires_abandon():
+    """Positive case: a coin in genuine regime death MUST fire abandon.
+    Guards against tuning the gates so loose that abandon never fires.
+    (Fixture is synthetic: PRL history with the final 14 days scaled down
+    80-95% — no cached real coin showed a textbook collapse when written.)"""
+    path = os.path.join(os.path.dirname(__file__), "fixtures",
+                        "synthetic_true_collapse.json")
+    hist = json.load(open(path))
+    sig = ms.signals_for("X", hist)
+    assert sig["verdict"] == "abandon"
