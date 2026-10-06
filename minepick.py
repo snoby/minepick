@@ -967,6 +967,21 @@ def coin_ranking(args):
     sys.stdout.write("\n")
 
 
+def rig_watts_calc(rig: dict, is_octo: bool):
+    """Rig power draw in watts: wall power for octo-style chassis rigs (fans/PSU
+    included — matches the live-profit allocation), else the sum of per-GPU
+    power readings when every GPU reports one. None = unknown (offline rig or
+    missing readings) — never guess, or profit/watt would be overstated."""
+    rp = next((g.get("rig_power_draw") for g in rig["gpus"] if g.get("rig_power_draw")), None)
+    gpu_powers = [g.get("live_power") for g in rig["gpus"]]
+    gpu_sum = sum(w for w in gpu_powers if w)
+    if is_octo and rp and gpu_sum and rp > gpu_sum:
+        return rp
+    if gpu_powers and all(w is not None for w in gpu_powers):
+        return gpu_sum
+    return None
+
+
 def hive(args):
     inventory, skipped = hive_inventory(args.farm, online_only=not args.offline,
                                        no_live_stats=args.no_live_stats)
@@ -1107,6 +1122,8 @@ def hive(args):
                 args.cost if args.cost is not None else 0.10)
 
     # per-rig coin split: {COIN: gpu_count} over matched GPUs
+    octo_res_check = [s.strip().lower() for s in
+                      (os.environ.get("OCTOMINERS") or "").split(",") if s.strip()]
     for rig in rigs.values():
         split = {}
         for g in rig["gpus"]:
@@ -1117,6 +1134,15 @@ def hive(args):
         rig["rig_live_profit_day"] = sum(g["live_profit_day"] for g in rig["gpus"]
                                          if isinstance(g.get("live_profit_day"), (int, float)))
         rig["has_live_stats"] = any(g.get("live_hash") for g in rig["gpus"])
+        # rig power + efficiency: wall power for octo-style rigs, else the sum of
+        # per-GPU readings (only when EVERY GPU reports one — no silent guessing)
+        import re as _re2
+        is_octo = bool(octo_res_check and
+                       any(_re2.search(r, str(rig.get("rig") or "").lower()) for r in octo_res_check))
+        rig["rig_watts"] = rig_watts_calc(rig, is_octo)
+        bp = rig["rig_best_profit_day"]
+        rig["profit_per_watt"] = (round(bp / rig["rig_watts"], 4)
+                                  if rig["rig_watts"] and isinstance(bp, (int, float)) else None)
 
     rig_rows = sorted(rigs.values(), key=lambda r: r["rig_best_profit_day"], reverse=True)
     profitable = [r for r in rig_rows if r["rig_best_profit_day"] > 0]
@@ -1149,7 +1175,8 @@ def hive(args):
                       "mining": r.get("mining_coins") or [],
                       "already_mining": r.get("already_mining", False),
                       "profit_day": round(r["rig_best_profit_day"], 2),
-                      "profit_month": round(r["rig_best_profit_day"] * 30, 2),
+                      "rig_watts": r.get("rig_watts"),
+                      "profit_per_watt": r.get("profit_per_watt"),
                       "live_profit_day": (round(r["rig_live_profit_day"], 2)
                                           if r.get("has_live_stats") and r["rig_live_profit_day"] else None),
                       "source": "live" if r.get("has_live_stats") else "estimate"}
@@ -1208,12 +1235,12 @@ def print_table(payload: dict) -> None:
     if payload.get("mode") == "summary":
         cost = payload.get("cost")
         print(f"\nFleet: {', '.join(payload.get('farms_checked') or [])}  @ ${cost}/kWh")
-        print(f"Profit: ${payload['fleet_profit_day']}/day  ${payload['fleet_profit_month']}/month"
+        print(f"Profit: ${payload['fleet_profit_day']}/day"
               f"  |  {payload['profitable_rigs']} profitable rigs, {payload['gpus_total']} GPUs")
         if payload.get("unmatched_models"):
             print(f"Unmatched models: {', '.join(payload['unmatched_models'])}")
         print()
-        hdr = ["Rig", "GPUs", "Mining", "Best", "Split", "Status", "$/day", "$/month", "+$/day if switched"]
+        hdr = ["Rig", "GPUs", "Mining", "Best", "Split", "Status", "$/day", "Watts", "$/day/W", "+$/day if switched"]
         rigs = sorted(payload["rigs"], key=lambda r: r["profit_day"], reverse=True)
         sw = {x["rig"]: x for x in payload.get("switches", [])}
         rows = [[r["rig"].replace(payload["farms_checked"][0] + " / ", "") if len(payload.get("farms_checked", [])) == 1 else r["rig"],
@@ -1224,7 +1251,8 @@ def print_table(payload: dict) -> None:
                  ("\033[32m● optimal\033[0m" if r.get("already_mining") else "\033[33m○ mixed/switch\033[0m"),
                  ((f"\033[36m${r['live_profit_day']:.2f} live\033[0m"
                    if r.get("live_profit_day") is not None else f"${r['profit_day']:.2f}")),
-                 f"${r['profit_month']:.2f}",
+                 (f"{r['rig_watts']:.0f}" if r.get("rig_watts") else "-"),
+                 (f"{r['profit_per_watt']:.3f}" if r.get("profit_per_watt") is not None else "-"),
                  ((f"+${sw[r['rig']]['gain_day']:.2f}" if r["rig"] in sw and sw[r["rig"]]["gain_day"] is not None
                    else ("+? (coin data missing)" if r["rig"] in sw else "-")))]
                 for r in rigs]
@@ -1232,7 +1260,7 @@ def print_table(payload: dict) -> None:
         print(row(hdr, widths))
         print("  " + "-+-".join("-" * w for w in widths))
         for r in rows:
-            print("  " + " | ".join(vpad(str(c), widths[i], right=(i in (1, 6, 7, 8)))
+            print("  " + " | ".join(vpad(str(c), widths[i], right=(i in (1, 6, 7, 8, 9)))
                                     for i, c in enumerate(r)))
         print()
     elif payload.get("mode") == "hive":
