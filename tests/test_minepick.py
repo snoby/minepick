@@ -409,3 +409,20 @@ def test_price_lookup_falls_back_to_local_rows():
     finally:
         m._local_rows.clear()
         m._price_cache.clear()
+
+
+def test_mark_pareto():
+    rigs = [
+        {"rig": "big", "rig_best_profit_day": 20.0, "profit_per_watt": 0.010},
+        {"rig": "best", "rig_best_profit_day": 25.0, "profit_per_watt": 0.021},
+        {"rig": "small", "rig_best_profit_day": 2.0, "profit_per_watt": 0.017},
+        {"rig": "unknown", "rig_best_profit_day": 9.0, "profit_per_watt": None},
+    ]
+    m.mark_pareto(rigs)
+    assert {r["rig"]: r["pareto"] for r in rigs} == {
+        "big": False, "best": True, "small": False, "unknown": None}
+    # exact tie on both axes: neither dominates the other
+    tie = [{"rig": "a", "rig_best_profit_day": 10, "profit_per_watt": 0.02},
+           {"rig": "b", "rig_best_profit_day": 10, "profit_per_watt": 0.02}]
+    m.mark_pareto(tie)
+    assert all(r["pareto"] for r in tie)

@@ -982,6 +982,24 @@ def rig_watts_calc(rig: dict, is_octo: bool):
     return None
 
 
+def mark_pareto(rig_rows):
+    """Flag Pareto-optimal rigs on ($/day, $/day/W): a rig is optimal if no
+    other rig beats it on BOTH axes. Rigs with unknown watts can't be
+    evaluated on efficiency and get pareto=None (no star, not a judgment)."""
+    cands = [r for r in rig_rows if r.get("profit_per_watt") is not None]
+    for r in rig_rows:
+        r["pareto"] = None if r.get("profit_per_watt") is None else False
+    for a in cands:
+        a_p, a_e = a["rig_best_profit_day"], a["profit_per_watt"]
+        dominated = any(b is not a
+                        and b["rig_best_profit_day"] >= a_p
+                        and b["profit_per_watt"] >= a_e
+                        and (b["rig_best_profit_day"] > a_p
+                             or b["profit_per_watt"] > a_e)
+                        for b in cands)
+        a["pareto"] = not dominated
+
+
 def hive(args):
     inventory, skipped = hive_inventory(args.farm, online_only=not args.offline,
                                        no_live_stats=args.no_live_stats)
@@ -1146,6 +1164,7 @@ def hive(args):
 
     rig_rows = sorted(rigs.values(), key=lambda r: r["rig_best_profit_day"], reverse=True)
     profitable = [r for r in rig_rows if r["rig_best_profit_day"] > 0]
+    mark_pareto(rig_rows)
 
     # per-model rollup
     models = {}
@@ -1170,6 +1189,7 @@ def hive(args):
             "fleet_profit_month": round(sum(r["rig_best_profit_day"] for r in rig_rows) * 30, 2),
             "rigs": [{"farm": r["farm"], "rig": r["rig"],
                       "gpus": len(r["gpus"]),
+                      "pareto": r.get("pareto"),
                       "best_coin": next((g["best_coin"] for g in r["gpus"] if g["best_coin"]), None),
                       "coin_split": r.get("coin_split") or {},
                       "mining": r.get("mining_coins") or [],
@@ -1243,7 +1263,9 @@ def print_table(payload: dict) -> None:
         hdr = ["Rig", "GPUs", "Mining", "Best", "Split", "Status", "$/day", "Watts", "$/day/W", "+$/day if switched"]
         rigs = sorted(payload["rigs"], key=lambda r: r["profit_day"], reverse=True)
         sw = {x["rig"]: x for x in payload.get("switches", [])}
-        rows = [[r["rig"].replace(payload["farms_checked"][0] + " / ", "") if len(payload.get("farms_checked", [])) == 1 else r["rig"],
+        rows = [[(("\033[1m★\033[0m " if r.get("pareto") else "") +
+                  r["rig"].replace(payload["farms_checked"][0] + " / ", "") if len(payload.get("farms_checked", [])) == 1 else
+                 (("\033[1m★\033[0m " if r.get("pareto") else "") + r["rig"])),
                  r["gpus"],
                  (", ".join(r.get("mining") or []) or "-"),
                  r["best_coin"] or "-",
