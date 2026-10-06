@@ -111,11 +111,13 @@ QUAN_FIXTURE = os.path.join(os.path.dirname(__file__), "fixtures", "quan_2026-10
 
 
 def _quan_day(target):
-    """index into the fixture's revenue series for a given MM-DD."""
+    """index into the fixture's revenue series for a given MM-DD.
+    Timezone-explicit UTC: the fixture timestamps are UTC-midnight points, so
+    local-tz fromtimestamp() picks different days on CI vs EDT machines."""
     import datetime
     hist = json.load(open(QUAN_FIXTURE))
     for i, r in enumerate(hist["revenue"]):
-        d = datetime.datetime.fromtimestamp(r["t"]).strftime("%m-%d")
+        d = datetime.datetime.fromtimestamp(r["t"], datetime.timezone.utc).strftime("%m-%d")
         if d == target:
             return i
     raise AssertionError(f"no {target} in fixture")
@@ -135,14 +137,15 @@ def test_quan_window_open_on_0928():
 
 
 def test_quan_window_closed_by_1002():
-    """10-02 (price peak $151): hashrate 7x'd, rev/H below pre-pump baseline
-    -> the window is arbitraged away; regime turns negative (closing).
-    NOTE: plan asserted divergence_7d < 0 here, but the fixture's div7 on
-    10-02 is +235 (cumulative 7d price pump dwarfs yield decay — the plan's
-    own data note records div7=+222). The closing read is rev/H below the
-    pre-pump baseline + regime_ratio < 0; div3 goes negative by 10-04."""
+    """Price peak $151 day (1790985600 = UTC 10-03; the test was authored on an
+    EDT box where that timestamp reads 10-02 20:00): hashrate 7x'd, rev/H below
+    pre-pump baseline -> the window is arbitraged away; regime turns negative.
+    NOTE: plan asserted divergence_7d < 0 here, but the fixture's div7 on the
+    peak day is +235 (cumulative 7d price pump dwarfs yield decay). The closing
+    read is rev/H below the pre-pump baseline + regime_ratio < 0; div3 goes
+    negative by the series end."""
     hist = json.load(open(QUAN_FIXTURE))
-    day = _quan_day("10-02")
+    day = _quan_day("10-03")
     sig = ms.signals_day("QUAN", hist, day)
     rev_peak = hist["revenue"][day]["v"]
     pre = [r["v"] for r in hist["revenue"] if r["t"] < hist["revenue"][day]["t"] - 5 * 86400][-3:]
