@@ -1271,19 +1271,23 @@ def print_table(payload: dict) -> None:
                  r["best_coin"] or "-",
                  " ".join(f"{c}x{n}" for c, n in (r.get("coin_split") or {}).items()) or "-",
                  ("\033[32m● optimal\033[0m" if r.get("already_mining") else "\033[33m○ mixed/switch\033[0m"),
-                 ((f"\033[36m${r['live_profit_day']:.2f} live\033[0m"
-                   if r.get("live_profit_day") is not None else f"${r['profit_day']:.2f}")),
+                 ((f"\033[1m\033[36m${r['live_profit_day']:.2f} live\033[0m"
+                   if r.get("live_profit_day") is not None else f"\033[1m${r['profit_day']:.2f}\033[0m")),
                  (f"{r['rig_watts']:.0f}" if r.get("rig_watts") else "-"),
                  (f"{r['profit_per_watt']:.3f}" if r.get("profit_per_watt") is not None else "-"),
                  ((f"+${sw[r['rig']]['gain_day']:.2f}" if r["rig"] in sw and sw[r["rig"]]["gain_day"] is not None
                    else ("+? (coin data missing)" if r["rig"] in sw else "-")))]
                 for r in rigs]
-        widths = [max(len(str(row[c])) for row in [hdr] + rows) for c in range(len(hdr))]
+        widths = [max(len(ANSI_RE.sub("", str(row[c]))) for row in [hdr] + rows) for c in range(len(hdr))]
         print(row(hdr, widths))
         print("  " + "-+-".join("-" * w for w in widths))
-        for r in rows:
-            print("  " + " | ".join(vpad(str(c), widths[i], right=(i in (1, 6, 7, 8, 9)))
-                                    for i, c in enumerate(r)))
+        for j, r in enumerate(rows):
+            # zebra striping: dim alternate rows so the eye tracks horizontally
+            line = "  " + " | ".join(vpad(str(c), widths[i], right=(i in (1, 6, 7, 8, 9)))
+                                     for i, c in enumerate(r))
+            if j % 2 == 1:
+                line = "\033[2m" + line + "\033[0m"
+            print(line)
         print()
     elif payload.get("mode") == "hive":
         print(f"\nCost: ${payload.get('cost')}/kWh  |  {payload['gpus_total']} GPUs  |  "
